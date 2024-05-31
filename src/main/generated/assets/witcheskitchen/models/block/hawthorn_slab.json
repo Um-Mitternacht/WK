@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "witcheskitchen:block/hawthorn_planks",
-    "side": "witcheskitchen:block/hawthorn_planks",
-    "top": "witcheskitchen:block/hawthorn_planks"
-  }
-}

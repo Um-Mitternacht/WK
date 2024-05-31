@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "witcheskitchen:block/juniper_log",
-    "side": "witcheskitchen:block/juniper_log"
-  }
-}

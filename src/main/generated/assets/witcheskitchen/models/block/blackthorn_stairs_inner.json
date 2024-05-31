@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "witcheskitchen:block/blackthorn_planks",
-    "side": "witcheskitchen:block/blackthorn_planks",
-    "top": "witcheskitchen:block/blackthorn_planks"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/door_top_right",
-  "textures": {
-    "bottom": "witcheskitchen:block/hawthorn_door_bottom",
-    "top": "witcheskitchen:block/hawthorn_door_top"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "witcheskitchen:block/chamomile_stage4_c"
-  }
-}

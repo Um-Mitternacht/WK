@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "witcheskitchen:block/amaranth_lower_stage6_a"
-  }
-}
