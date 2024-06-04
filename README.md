@@ -5,10 +5,8 @@ genre
 
 ## License
 
-This mod is avaliable under the MIT License.
+This mod is avaliable under the MIT License, and shall remain that way for the time being, unless a unanimous decision is agreed on by various people within the team.
 
 ## Todo
 
 Everything. Lots of everything.
-
-Notice: This will likely switch to Quilt at some point, once it comes out. Preparations for that day are in already.
