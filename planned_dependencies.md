@@ -55,3 +55,7 @@ Bewitchment (Possibly?)
 Various sanity checks with other mods that share this theme.
 
 **All dependencies required for specific dependencies we add will also be included.**
+
+**Minecraft version**
+
+1.21.*, and we need to figure out how to completely rewrite the mod for said version. However, we can't lock down on a version forever.
