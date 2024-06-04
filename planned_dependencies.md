@@ -52,4 +52,6 @@ Nycto (whenever it drops, and if we do things like vampires and werewolves)
 
 Bewitchment (Possibly?)
 
+Various sanity checks with other mods that share this theme.
+
 **All dependencies required for specific dependencies we add will also be included.**
