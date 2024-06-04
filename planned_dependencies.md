@@ -58,4 +58,4 @@ Various sanity checks with other mods that share this theme.
 
 **Minecraft version**
 
-1.21.*, and we need to figure out how to completely rewrite the mod for said version. However, we can't lock down on a version forever.
+1.21.*, and we need to figure out how to completely rewrite the mod for said version. However, we can't lock down on a specific version forever.
