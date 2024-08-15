@@ -73,7 +73,9 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 	modImplementation "com.github.Virtuoel:Pehkui:${pehkui_version}"
 	modCompileOnly "squeek.appleskin:appleskin-fabric:${appleskin_version}:api"
-	modImplementation include "maven.modrinth:midnightlib:${project.midnightlib_version}"  	
+	include modApi("maven.modrinth:impersonate:${impersonate_version}")
+	include modApi("maven.modrinth:midnightlib:${midnightlib_version}")
+	modImplementation "dev.emi:trinkets:${trinkets_version}"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"	
 	
