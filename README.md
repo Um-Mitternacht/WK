@@ -5,7 +5,8 @@ genre
 
 ## License
 
-This mod is avaliable under the MIT License, and shall remain that way for the time being, unless a unanimous decision is agreed on by various people within the team.
+This mod is avaliable under the MIT License, and shall remain that way for the time being, unless a unanimous decision
+is agreed on by various people within the team.
 
 ## Todo
 
