@@ -5,11 +5,8 @@ build/
 out/
 classes/
 
-# Quilt Loom
-remappedSrc/
-run/
-
 # eclipse
+
 *.launch
 
 # idea
@@ -31,6 +28,13 @@ bin/
 
 *.DS_Store
 
-# Eclipse JDT LS
-workspace/
-*.bak
+# fabric
+
+run/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
