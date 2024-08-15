@@ -107,6 +107,7 @@ dependencies {
     modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-world:${project.cca_version}"
     modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-scoreboard:${project.cca_version}"
     modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-chunk:${project.cca_version}"
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-block:${project.cca_version}"
     modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${wthitVersion}"
     modRuntimeOnly "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modRuntimeOnly "lol.bai:badpackets:fabric-${badpacketsVersion}"
