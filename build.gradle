@@ -12,11 +12,38 @@ base {
 
 repositories {
     maven {
-        url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
-        content {
-            includeGroup "com.klikli_dev"
-        }
+		url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
+    }
+	maven {
+		url 'https://libs.azuredoom.com:4443/mods'
 	}
+    maven {
+        url "https://maven.terraformersmc.com"	
+    }
+    maven {
+        url "https://maven.ryanliptak.com"
+    }
+    maven {
+        url "https://maven.shedaniel.me"
+    }
+    maven {
+        url "https://api.modrinth.com/maven"
+    }
+    maven {
+        url "https://jitpack.io"
+    }	
+    maven { 
+		url "https://maven.terraformersmc.com/releases"	
+	}
+    maven {
+        url "https://maven.ladysnake.org/releases"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    maven {
+        url "https://maven.jamieswhiteshirt.com/libs-release"
+    }	
 }
 
 loom {
@@ -40,6 +67,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modImplementation "com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"
+	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+	modImplementation "com.github.Virtuoel:Pehkui:${pehkui_version}"
+	modCompileOnly "squeek.appleskin:appleskin-fabric:${appleskin_version}:api"
 	
 }
 
