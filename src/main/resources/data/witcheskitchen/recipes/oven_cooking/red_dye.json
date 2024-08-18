@@ -1,0 +1,14 @@
+{
+  "type": "witcheskitchen:oven_cooking",
+  "ingredient": {
+    "item": "minecraft:sweet_berries"
+  },
+  "results": [
+    {
+      "item": "minecraft:red_dye",
+      "count": 3
+    }
+  ],
+  "time": 200,
+  "experience": 0.2
+}

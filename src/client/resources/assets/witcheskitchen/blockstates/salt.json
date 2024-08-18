@@ -1,0 +1,104 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "OR": [
+          {
+            "east": "none",
+            "west": "none",
+            "north": "none",
+            "south": "none"
+          },
+          {
+            "east": "side|up",
+            "north": "side|up"
+          },
+          {
+            "east": "side|up",
+            "south": "side|up"
+          },
+          {
+            "west": "side|up",
+            "south": "side|up"
+          },
+          {
+            "west": "side|up",
+            "north": "side|up"
+          }
+        ]
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_dot"
+      }
+    },
+    {
+      "when": {
+        "north": "side|up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_side0"
+      }
+    },
+    {
+      "when": {
+        "south": "side|up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_alt0"
+      }
+    },
+    {
+      "when": {
+        "east": "side|up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_alt1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "side|up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_side1",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_up"
+      }
+    },
+    {
+      "when": {
+        "east": "up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_up",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_up",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "up"
+      },
+      "apply": {
+        "model": "witcheskitchen:block/salt_up",
+        "y": 270
+      }
+    }
+  ]
+}
