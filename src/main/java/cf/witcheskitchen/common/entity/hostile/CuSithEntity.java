@@ -4,12 +4,20 @@ import cf.witcheskitchen.api.entity.WKHostileEntity;
 import cf.witcheskitchen.common.entity.tameable.FerretEntity;
 import cf.witcheskitchen.common.registry.WKSoundEvents;
 import cf.witcheskitchen.common.registry.WKStatusEffects;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.internal.common.constant.DefaultAnimations;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animatable.instance.SingletonAnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimationState;
+import mod.azure.azurelib.core.animation.*;
+import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
@@ -17,6 +25,8 @@ import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -27,13 +37,6 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.constant.DefaultAnimations;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animatable.instance.SingletonAnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.object.PlayState;
 
 import java.util.Random;
 import java.util.SplittableRandom;
@@ -82,28 +85,18 @@ public class CuSithEntity extends WKHostileEntity implements GeoEntity {
         this.goalSelector.add(2, new MeleeAttackGoal(this, 1, true));
         this.goalSelector.add(4, new StopAndLookAtEntityGoal(this, MobEntity.class, 2.0f, 0.8f));
         this.goalSelector.add(6, new WanderAroundFarGoal(this, 0.8D, 1));
-        this.targetSelector.add(3, new TargetGoal<>(this, PlayerEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, VillagerEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, GolemEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, WitchEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, CowEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, PiglinEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, PiglinBruteEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, SheepEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, GoatEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, FerretEntity.class, false));
-        this.targetSelector.add(3, new TargetGoal<>(this, LivingEntity.class, 10, false, false, entity -> entity.getGroup() == EntityGroup.ILLAGER));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, VillagerEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, GolemEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, WitchEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, CowEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PiglinEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, PiglinBruteEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, SheepEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, GoatEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, FerretEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, LivingEntity.class, 10, false, false, entity -> entity.getType().isIn(EntityTypeTags.ILLAGER)));
         this.targetSelector.add(0, new RevengeGoal(this).setGroupRevenge());
-    }
-
-    @Override
-    public float getEyeHeight(EntityPose pose) {
-        return super.getEyeHeight(pose);
-    }
-
-    @Override
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
     }
 
     @Override
@@ -114,7 +107,7 @@ public class CuSithEntity extends WKHostileEntity implements GeoEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!world.isClient && !hasCustomName() && world.isDay() && !world.isRaining() && !world.isThundering() && world.isSkyVisibleAllowingSea(getBlockPos())) {
+        if (!getWorld().isClient && !hasCustomName() && getWorld().isDay() && !getWorld().isRaining() && !getWorld().isThundering() && getWorld().isSkyVisibleAllowingSea(getBlockPos())) {
             remove(Entity.RemovalReason.KILLED);
         }
     }
@@ -148,12 +141,12 @@ public class CuSithEntity extends WKHostileEntity implements GeoEntity {
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         SplittableRandom random = new SplittableRandom();
         int var = random.nextInt(0, 8);
         this.setVariant(var);
         this.dataTracker.set(VARIANT, random.nextInt(EYE_VARIANTS));
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
@@ -198,7 +191,7 @@ public class CuSithEntity extends WKHostileEntity implements GeoEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source.isFallingBlock() || source.isFire() || source.isFromFalling()) {
+        if (source.isOf(DamageTypes.FALLING_BLOCK) || source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.IS_FALL)) {
             return false;
         }
         return super.damage(source, amount);
@@ -206,16 +199,6 @@ public class CuSithEntity extends WKHostileEntity implements GeoEntity {
 
     @Override
     public boolean isFireImmune() {
-        return true;
-    }
-
-    @Override
-    public boolean isUndead() {
-        return true;
-    }
-
-    @Override
-    public boolean canBreatheInWater() {
         return true;
     }
 

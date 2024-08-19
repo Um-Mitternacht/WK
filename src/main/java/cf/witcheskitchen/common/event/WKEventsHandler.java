@@ -1,15 +1,15 @@
 package cf.witcheskitchen.common.event;
 
 import cf.witcheskitchen.WitchesKitchen;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
-import net.fabricmc.fabric.api.loot.v2.LootTableSource;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableSource;
 import net.minecraft.block.Blocks;
-import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.LootTableEntry;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 
 public class WKEventsHandler {
     /**
@@ -21,11 +21,11 @@ public class WKEventsHandler {
      */
     public static class LootTablesListener implements LootTableEvents.Modify {
         @Override
-        public void modifyLootTable(ResourceManager resourceManager, LootManager lootManager, Identifier id, LootTable.Builder tableBuilder, LootTableSource source) {
-            final Identifier grassLootTable = Blocks.GRASS.getLootTableId();
-            final Identifier tallGrassLootTable = Blocks.TALL_GRASS.getLootTableId();
-            final Identifier seedsAddition = WitchesKitchen.id("listener/seeds");
-            if (id.equals(grassLootTable) || id.equals(tallGrassLootTable)) {
+        public void modifyLootTable(RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source, RegistryWrapper.WrapperLookup registries) {
+            final RegistryKey<LootTable> grassLootTable = Blocks.SHORT_GRASS.getLootTableKey();
+            final RegistryKey<LootTable> tallGrassLootTable = Blocks.TALL_GRASS.getLootTableKey();
+            final RegistryKey<LootTable> seedsAddition = RegistryKey.of(RegistryKeys.LOOT_TABLE, WitchesKitchen.id("listener/seeds"));
+            if (key.equals(grassLootTable) || key.equals(tallGrassLootTable)) {
                 // Adds a new entry for grass and tall grass loot tables
                 tableBuilder.pool(LootPool.builder().with(LootTableEntry.builder(seedsAddition).weight(1)).build());
             }

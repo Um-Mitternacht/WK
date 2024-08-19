@@ -183,6 +183,8 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
         markDirty();
     }
 
+    // TODO: write to NBT or to components?
+    //       or some to components and some to NBT?
     @Override
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         super.readNbt(nbt, registryLookup);
@@ -223,6 +225,13 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
             this.color,
             this.powered
         ));
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+        final NbtCompound data = new NbtCompound();
+        writeNbt(data, registryLookup);
+        return data;
     }
 
     @Override

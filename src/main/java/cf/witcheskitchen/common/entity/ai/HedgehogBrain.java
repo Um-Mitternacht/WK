@@ -9,8 +9,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;
+import net.minecraft.entity.ai.brain.task.MoveToTargetTask;
 import net.minecraft.entity.ai.brain.task.StayAboveWaterTask;
-import net.minecraft.entity.ai.brain.task.WanderAroundTask;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
@@ -35,7 +35,7 @@ public class HedgehogBrain {
                 new DontMoveTask(),
                 new StayAboveWaterTask(0.6f),
                 new LookAroundTask(45, 90),
-                new WanderAroundTask()
+                new MoveToTargetTask()
         );
     }
 

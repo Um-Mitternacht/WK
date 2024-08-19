@@ -7,14 +7,17 @@ import cf.witcheskitchen.common.registry.WKItems;
 import cf.witcheskitchen.common.registry.WKStatusEffects;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.registry.RegistryWrapper;
+
+import java.util.concurrent.CompletableFuture;
 
 public class WKLanguageProvider extends FabricLanguageProvider {
-    protected WKLanguageProvider(FabricDataOutput output) {
-        super(output);
+    protected WKLanguageProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> future) {
+        super(output, future);
     }
 
     @Override
-    public void generateTranslations(TranslationBuilder builder) {
+    public void generateTranslations(RegistryWrapper.WrapperLookup lookup, TranslationBuilder builder) {
         //GROUPS
         builder.add(WKItemGroupEvents.GENERAL_TAB, "Witches' Kitchen General");
         builder.add(WKItemGroupEvents.FOOD_TAB, "Witches' Kitchen Food");
@@ -282,7 +285,7 @@ public class WKLanguageProvider extends FabricLanguageProvider {
         builder.add("item.minecraft.lingering_potion.effect.rum", "Rum Lingering Potion");
 
         //STATUS EFFECTS
-        builder.add(WKStatusEffects.DRUNK, "Drunk");
+        builder.add(WKStatusEffects.DRUNK.value(), "Drunk");
 
         //DEATH MESSAGE
         builder.add("death.attack.on_oven", "%s cooked themselves to a crisp... they do not taste great");

@@ -2,7 +2,9 @@ package cf.witcheskitchen.common.component;
 
 import cf.witcheskitchen.WitchesKitchen;
 import cf.witcheskitchen.api.fluid.FluidStack;
+import cf.witcheskitchen.common.component.blockentity.TeapotData;
 import cf.witcheskitchen.common.component.blockentity.WitchesCauldronData;
+import cf.witcheskitchen.common.component.item.SeedTypeData;
 import cf.witcheskitchen.common.component.item.TaglockEntityData;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
@@ -31,6 +33,18 @@ public class WKComponents {
     public static final ComponentType<FluidStack> FLUID_STACK = register("fluid_stack", ComponentType.<FluidStack>builder()
         .codec(FluidStack.CODEC)
         .packetCodec(FluidStack.PACKET_CODEC)
+        .build()
+    );
+
+    public static final ComponentType<TeapotData> TEAPOT = register("teapot", ComponentType.<TeapotData>builder()
+        .codec(TeapotData.CODEC)
+        .packetCodec(TeapotData.PACKET_CODEC)
+        .build()
+    );
+
+    public static final ComponentType<SeedTypeData> SEED_TYPE = register("seed_type", ComponentType.<SeedTypeData>builder()
+        .codec(SeedTypeData.CODEC)
+        .packetCodec(SeedTypeData.PACKET_CODEC)
         .build()
     );
 

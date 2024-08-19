@@ -1,19 +1,27 @@
 package cf.witcheskitchen.common.entity.neutral;
 
 import cf.witcheskitchen.api.entity.WKTameableEntity;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.internal.common.constant.DefaultAnimations;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -24,11 +32,6 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.constant.DefaultAnimations;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.SplittableRandom;
 import java.util.UUID;
@@ -37,7 +40,7 @@ import java.util.UUID;
 public class ChurchGrimEntity extends WKTameableEntity implements GeoEntity, Angerable, Tameable {
     private final int VARIANTS = 8;
     //Add a string or something here for a variant that is a white, short-haired dog and can appear if one is named Max
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public ChurchGrimEntity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
@@ -67,11 +70,11 @@ public class ChurchGrimEntity extends WKTameableEntity implements GeoEntity, Ang
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         SplittableRandom random = new SplittableRandom();
         int var = random.nextInt(0, 9);
         this.setVariant(var);
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
@@ -120,15 +123,15 @@ public class ChurchGrimEntity extends WKTameableEntity implements GeoEntity, Ang
     }
 
     @Override
-    public float getEyeHeight(EntityPose pose) {
-        return super.getEyeHeight(pose);
-    }
-
-    @Override
     public void readCustomDataFromNbt(NbtCompound tag) {
         super.readCustomDataFromNbt(tag);
         this.setVariant(tag.getInt("Variant"));
-        this.readAngerFromNbt(this.world, tag);
+        this.readAngerFromNbt(this.getWorld(), tag);
+    }
+
+    @Override
+    public boolean isBreedingItem(ItemStack stack) {
+        return false;
     }
 
     @Override
@@ -169,13 +172,8 @@ public class ChurchGrimEntity extends WKTameableEntity implements GeoEntity, Ang
     }
 
     @Override
-    public boolean canBreatheInWater() {
-        return true;
-    }
-
-    @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source.isFallingBlock() || source.isFire() || source.isFromFalling()) {
+        if (source.isOf(DamageTypes.FALLING_BLOCK) || source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.IS_FALL)) {
             return false;
         }
         return super.damage(source, amount);
@@ -195,16 +193,6 @@ public class ChurchGrimEntity extends WKTameableEntity implements GeoEntity, Ang
     @Override
     public PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         return null;
-    }
-
-    @Override
-    public boolean isUndead() {
-        return true;
-    }
-
-    @Override
-    public EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
     }
 
 

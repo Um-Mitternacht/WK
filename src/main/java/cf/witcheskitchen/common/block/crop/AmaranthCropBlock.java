@@ -62,7 +62,7 @@ public class AmaranthCropBlock extends WKTallCropBlock implements CropVariants {
         Optional<AmaranthTypes> nextType = type.next(type);
         if (nextType.isPresent()) {
             NbtCompound nbtCompound = new NbtCompound();
-            SeedTypeHelper.toNbt(nbtCompound, nextType.get().getName(), nextType.get().getType(), nextType.get().getColor());
+            SeedTypeHelper.toComponent(nbtCompound, nextType.get().getName(), nextType.get().getType(), nextType.get().getColor());
             getNextSeed(world, pos, nbtCompound);
         }
         super.onBreak(world, pos, state, player);
@@ -72,7 +72,7 @@ public class AmaranthCropBlock extends WKTallCropBlock implements CropVariants {
     @Override
     protected ItemStack getSeedsItemStack() {
         NbtCompound nbt = new NbtCompound();
-        SeedTypeHelper.toNbt(nbt, type.getName(), type.getType(), type.getColor());
+        SeedTypeHelper.toComponent(nbt, type.getName(), type.getType(), type.getColor());
         ItemStack seed = new ItemStack(WKItems.AMARANTH_SEEDS);
         seed.getOrCreateNbt().copyFrom(nbt);
         return seed;

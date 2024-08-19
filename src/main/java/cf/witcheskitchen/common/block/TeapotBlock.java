@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.particle.EntityEffectParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -21,7 +22,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -54,7 +55,7 @@ public class TeapotBlock extends WKBlock implements Waterloggable {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite()).with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+        return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection().getOpposite()).with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
     @Nullable
@@ -92,7 +93,7 @@ public class TeapotBlock extends WKBlock implements Waterloggable {
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, RandomGenerator random) {
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (world.getBlockEntity(pos) instanceof TeapotBlockEntity be) {
             Direction direction = state.get(FACING).rotateClockwise(Direction.Axis.Y);
             Direction.Axis axis = direction.getAxis();
@@ -103,12 +104,12 @@ public class TeapotBlock extends WKBlock implements Waterloggable {
             double k = axis == Direction.Axis.Z ? (double) direction.getOffsetZ() * g : h;
 
             if (be.effect != null) {
-                int color = be.effect.getColor();
+                int color = be.effect.value().getColor();
                 float width = 0.25f;
                 double d = (double) (color >> 16 & 0xFF) / 255.0;
                 double e = (double) (color >> 8 & 0xFF) / 255.0;
                 double f = (double) (color >> 0 & 0xFF) / 255.0;
-                world.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5 + MathHelper.nextDouble(world.random, -width, width), pos.getY() + 0.25, pos.getZ() + 0.5 + MathHelper.nextDouble(world.random, -width, width), d, e, f);
+                world.addParticle(EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, color), pos.getX() + 0.5 + MathHelper.nextDouble(world.random, -width, width), pos.getY() + 0.25, pos.getZ() + 0.5 + MathHelper.nextDouble(world.random, -width, width), d, e, f);
             } else if (be.progress > 0) {
                 double d = (double) pos.getX() + 0.5;
                 double e = (double) pos.getY() + 0.5f;

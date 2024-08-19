@@ -3,13 +3,13 @@ package cf.witcheskitchen.common.item;
 import cf.witcheskitchen.api.util.TextUtils;
 import cf.witcheskitchen.data.DimColorReloadListener;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
@@ -20,12 +20,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.qsl.worldgen.dimension.api.QuiltDimensions;
 
 import java.util.List;
+import java.util.Set;
 
 public class WaystoneItem extends Item {
     private static final int MAX_USE_TIME = 40;
@@ -45,7 +44,7 @@ public class WaystoneItem extends Item {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        if (!user.world.isClient()) {
+        if (!user.getWorld().isClient()) {
             bindEntityPosition(entity, stack);
         }
         return super.useOnEntity(stack, user, entity, hand);
@@ -56,7 +55,9 @@ public class WaystoneItem extends Item {
             BlockPos blockPos = getPosFromWaystone(waystone);
             ServerWorld toWorld = getDimFromWaystone(serverWorld, waystone);
             if (blockPos != null) {
-                QuiltDimensions.teleport(entity, toWorld != null ? toWorld : serverWorld, new TeleportTarget(new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ()), entity.getVelocity(), entity.getYaw(), entity.getPitch()));
+                Vec3d center = blockPos.toBottomCenterPos();
+                // TODO: is this correct?
+                entity.teleport(toWorld != null ? toWorld : serverWorld, center.x, center.y, center.z, Set.of(PositionFlag.X, PositionFlag.Y, PositionFlag.Z), entity.getYaw(), entity.getPitch());
             }
         }
     }

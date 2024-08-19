@@ -251,7 +251,7 @@ public class FluidTank implements IFluidStorage {
     /**
      * @return Current {@link FluidStack} in the tank
      */
-    @Nonnull
+    @NotNull
     public FluidStack getStack() {
         return stack;
     }

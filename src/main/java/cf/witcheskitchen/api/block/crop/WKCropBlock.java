@@ -1,5 +1,7 @@
 package cf.witcheskitchen.api.block.crop;
 
+import cf.witcheskitchen.common.component.WKComponents;
+import cf.witcheskitchen.common.component.item.SeedTypeData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
@@ -9,14 +11,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -129,7 +130,7 @@ public abstract class WKCropBlock extends CropBlock {
      * @return The current age at the given crop BlockState
      */
     @Override
-    protected int getAge(BlockState state) {
+    public int getAge(BlockState state) {
         return super.getAge(state);
     }
 
@@ -169,7 +170,7 @@ public abstract class WKCropBlock extends CropBlock {
      * </p>
      * <p>
      * This is triggered in {@link ServerWorld#tickChunk(WorldChunk, int)} and
-     * if this returns false, {@link WKCropBlock#randomTick(BlockState, ServerWorld, BlockPos, RandomGenerator)}
+     * if this returns false, {@link WKCropBlock#randomTick(BlockState, ServerWorld, BlockPos, Random)}
      * will never get executed.
      * </p>
      */
@@ -194,13 +195,13 @@ public abstract class WKCropBlock extends CropBlock {
      * </p>
      */
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, RandomGenerator random) {
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
     }
 
     /**
      * Updates the crop {@link BlockState}, by checking {@link CropBlock#getAge(BlockState)} is <  {@link CropBlock#getMaxAge()}.
-     * <strong>NOTE:</strong> THIS METHOD IS ONLY TRIGGERED BY {@link WKCropBlock#grow(ServerWorld, RandomGenerator, BlockPos, BlockState)}
+     * <strong>NOTE:</strong> THIS METHOD IS ONLY TRIGGERED BY {@link WKCropBlock#grow(ServerWorld, Random, BlockPos, BlockState)}
      */
     @Override
     public void applyGrowth(World world, BlockPos pos, BlockState state) {
@@ -210,14 +211,14 @@ public abstract class WKCropBlock extends CropBlock {
 
     /**
      * <p>
-     * This method is a filter for {@link #grow(ServerWorld, RandomGenerator, BlockPos, BlockState)} and the BoneMeal grow method.
+     * This method is a filter for {@link #grow(ServerWorld, Random, BlockPos, BlockState)} and the BoneMeal grow method.
      * It is only used by {@link net.minecraft.item.BoneMealItem#useOnFertilizable(ItemStack, World, BlockPos)},
-     * although when extending this class it will also be triggered by {@link #grow(ServerWorld, RandomGenerator, BlockPos, BlockState)}.
+     * although when extending this class it will also be triggered by {@link #grow(ServerWorld, Random, BlockPos, BlockState)}.
      * </p>
      * It is always returning true by the parent class unless overridden.
      */
     @Override
-    public boolean canGrow(World world, RandomGenerator random, BlockPos pos, BlockState state) {
+    public boolean canGrow(World world, Random random, BlockPos pos, BlockState state) {
         return super.canGrow(world, random, pos, state);
     }
 
@@ -233,7 +234,7 @@ public abstract class WKCropBlock extends CropBlock {
      * {@link BeeEntity.GrowCropsGoal#tick()}
      */
     @Override
-    public void grow(ServerWorld world, RandomGenerator random, BlockPos pos, BlockState state) {
+    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
         if (canGrow(world, random, pos, state)) {
             super.grow(world, random, pos, state);
         }
@@ -269,15 +270,15 @@ public abstract class WKCropBlock extends CropBlock {
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state) {
         return getSeedsItemStack();
     }
 
     protected abstract ItemStack getSeedsItemStack();
 
-    public void getNextSeed(World world, BlockPos pos, NbtCompound nbtCompound) {
+    public void getNextSeed(World world, BlockPos pos, SeedTypeData data) {
         ItemStack itemStack2 = getSeedsItemStack();
-        itemStack2.getOrCreateNbt().copyFrom(nbtCompound);
+        itemStack2.set(WKComponents.SEED_TYPE, data);
         ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), itemStack2);
     }
 }

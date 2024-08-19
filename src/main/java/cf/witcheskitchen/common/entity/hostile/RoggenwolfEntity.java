@@ -1,21 +1,23 @@
 package cf.witcheskitchen.common.entity.hostile;
 
-import cf.witcheskitchen.api.entity.WKCreatureTypeEnum;
 import cf.witcheskitchen.api.entity.WKHostileEntity;
-import net.minecraft.entity.*;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import net.minecraft.entity.EntityData;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import java.util.SplittableRandom;
 
@@ -33,10 +35,10 @@ public class RoggenwolfEntity extends WKHostileEntity implements GeoEntity {
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         int var = new SplittableRandom().nextInt(1, 7);
         this.setVariant(var);
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
@@ -68,18 +70,13 @@ public class RoggenwolfEntity extends WKHostileEntity implements GeoEntity {
     }
 
     @Override
-    public boolean canBreatheInWater() {
-        return true;
-    }
-
-    @Override
     public boolean isPushable() {
         return true;
     }
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source.isFallingBlock()) {
+        if (source.isOf(DamageTypes.FALLING_BLOCK)) {
             return false;
         }
         return super.damage(source, amount);
@@ -95,14 +92,9 @@ public class RoggenwolfEntity extends WKHostileEntity implements GeoEntity {
     public DamageSource getRecentDamageSource() {
         if (isOnFire()) {
             setOnFireFor(15);
-            this.applyDamage(DamageSource.ON_FIRE, 500);
+            this.applyDamage(this.getDamageSources().onFire(), 500);
         }
         return super.getRecentDamageSource();
-    }
-
-    @Override
-    public EntityGroup getGroup() {
-        return WKCreatureTypeEnum.DEMONIC;
     }
 
     @Override

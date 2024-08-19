@@ -3,10 +3,13 @@ package cf.witcheskitchen.common.blockentity;
 import cf.witcheskitchen.api.block.entity.WKBlockEntity;
 import cf.witcheskitchen.api.block.entity.WKBlockEntityWithInventory;
 import cf.witcheskitchen.api.util.InventoryManager;
-import cf.witcheskitchen.client.gui.screen.handler.BrewingBarrelScreenHandler;
 import cf.witcheskitchen.common.recipe.BarrelFermentingRecipe;
+import cf.witcheskitchen.common.recipe.MultipleStackRecipeInput;
 import cf.witcheskitchen.common.registry.WKBlockEntityTypes;
 import cf.witcheskitchen.common.registry.WKRecipeTypes;
+import cf.witcheskitchen.common.screenhandler.BrewingBarrelScreenHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -18,6 +21,8 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
@@ -30,12 +35,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 public class BrewingBarrelBlockEntity extends WKBlockEntityWithInventory implements NamedScreenHandlerFactory {
 
     public static final int MAX_TIME = 168_000; // 7 days
-    @ClientOnly
+    // TODO: are we sure this wouldn't crash the dedicated server?
+    @Environment(EnvType.CLIENT)
     private final InventoryManager<BrewingBarrelBlockEntity> clientInventoryManager;
     private final PropertyDelegate delegate;
     private boolean hasWater;
@@ -153,7 +158,7 @@ public class BrewingBarrelBlockEntity extends WKBlockEntityWithInventory impleme
             if (this.clientInventoryManager.isEmpty()) {
                 return false;
             }
-            return matchingRecipe.matches(this, this.world);
+            return matchingRecipe.matches(new MultipleStackRecipeInput(this.clientInventoryManager.getStacks()), this.world);
         }
     }
 
@@ -162,14 +167,15 @@ public class BrewingBarrelBlockEntity extends WKBlockEntityWithInventory impleme
             return null;
         } else if (inputs.isEmpty()) {
             return null;
-        } else if (this.previousRecipe != null && previousRecipe.matches(this, world)) {
+        } else if (this.previousRecipe != null && previousRecipe.matches(new MultipleStackRecipeInput(this.manager.getStacks()), world)) {
             return previousRecipe;
         } else {
             final BarrelFermentingRecipe recipe = world.getRecipeManager()
                     .listAllOfType(WKRecipeTypes.BARREL_FERMENTING_RECIPE_TYPE)
                     .stream()
-                    .filter(brewingRecipe -> brewingRecipe.matches(this, world))
+                    .filter(brewingRecipe -> brewingRecipe.value().matches(new MultipleStackRecipeInput(this.manager.getStacks()), world))
                     .findFirst()
+                    .map(RecipeEntry::value)
                     .orElse(null);
             if (recipe != null) {
                 this.previousRecipe = recipe;
@@ -202,27 +208,27 @@ public class BrewingBarrelBlockEntity extends WKBlockEntityWithInventory impleme
                     }
                 }
             }
-            this.clientInventoryManager.setStack(0, recipe.craft(this.clientInventoryManager));
+            this.clientInventoryManager.setStack(0, recipe.craft(new MultipleStackRecipeInput(this.clientInventoryManager.getStacks()), world.getRegistryManager()));
             world.updateListeners(pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_ALL);
             return true;
         }
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
+        super.readNbt(nbt, lookup);
         this.clientInventoryManager.clear();
-        Inventories.readNbt(nbt.getCompound("ClientInventory"), this.clientInventoryManager.getStacks());
+        Inventories.readNbt(nbt.getCompound("ClientInventory"), this.clientInventoryManager.getStacks(), lookup);
         this.timer = nbt.getInt("Timer");
         this.hasWater = nbt.getBoolean("HasWater");
         this.hasFinished = nbt.getBoolean("HasFinished");
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
+        super.writeNbt(nbt, lookup);
         NbtCompound clientData = new NbtCompound();
-        Inventories.writeNbt(clientData, this.clientInventoryManager.getStacks());
+        Inventories.writeNbt(clientData, this.clientInventoryManager.getStacks(), lookup);
         nbt.put("ClientInventory", clientData);
         nbt.putInt("Timer", this.timer);
         nbt.putBoolean("HasWater", this.hasWater);
@@ -263,13 +269,13 @@ public class BrewingBarrelBlockEntity extends WKBlockEntityWithInventory impleme
     // Client Sync
     @Override
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.of(this);
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
-    public NbtCompound toSyncedNbt() {
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         final NbtCompound data = new NbtCompound();
-        writeNbt(data);
+        writeNbt(data, registryLookup);
         return data;
     }
 
@@ -281,7 +287,7 @@ public class BrewingBarrelBlockEntity extends WKBlockEntityWithInventory impleme
         this.world.playSound(null, d, e, f, soundEvent, SoundCategory.BLOCKS, 0.5f, this.world.random.nextFloat() * 0.1f + 0.9f);
     }
 
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public ItemStack getRenderStack() {
         if (this.clientInventoryManager.isEmpty()) {
             return ItemStack.EMPTY;

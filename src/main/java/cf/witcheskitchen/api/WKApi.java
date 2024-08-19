@@ -1,6 +1,5 @@
 package cf.witcheskitchen.api;
 
-import cf.witcheskitchen.api.entity.WKCreatureTypeEnum;
 import cf.witcheskitchen.common.item.TaglockItem;
 import cf.witcheskitchen.common.registry.WKTags;
 import net.minecraft.entity.EntityGroup;

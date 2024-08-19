@@ -1,16 +1,17 @@
 package cf.witcheskitchen.data;
 
-import cf.witcheskitchen.common.registry.WKBlocks;
-import cf.witcheskitchen.common.registry.WKEntityTypes;
-import cf.witcheskitchen.common.registry.WKItems;
-import cf.witcheskitchen.common.registry.WKTags;
+import cf.witcheskitchen.common.registry.*;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Items;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.ItemTags;
 
 import java.util.concurrent.CompletableFuture;
@@ -75,8 +76,22 @@ public class WKTagProvider {
             getOrCreateTagBuilder(WKTags.LESSER_DEMON);
             getOrCreateTagBuilder(WKTags.RIGHT_HAND_WITCH_SUMMON);
             getOrCreateTagBuilder(WKTags.TAGLOCK_BLACKLIST).add(EntityType.ENDER_DRAGON, EntityType.WITHER);
+            getOrCreateTagBuilder(WKTags.DEMONIC).add(WKEntityTypes.ROGGENWOLF);
 
             //VANILLA
+            getOrCreateTagBuilder(EntityTypeTags.UNDEAD).add(WKEntityTypes.CUSITH, WKEntityTypes.CHURCH_GRIM);
+            getOrCreateTagBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER).add(WKEntityTypes.CUSITH, WKEntityTypes.ROGGENWOLF, WKEntityTypes.CHURCH_GRIM);
+        }
+    }
+
+    public static class WKDamageTypeTags extends FabricTagProvider<DamageType> {
+        public WKDamageTypeTags(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+            super(output, RegistryKeys.DAMAGE_TYPE, registriesFuture);
+        }
+
+        @Override
+        protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+            getOrCreateTagBuilder(DamageTypeTags.BURN_FROM_STEPPING).add(WKDamageSources.ON_OVEN.getType());
         }
     }
 }

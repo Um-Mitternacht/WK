@@ -14,6 +14,7 @@ public interface WKDamageSources {
 
     }
 
+    // TODO: how do we do this?
     class WKFireDamageSource extends DamageSource {
 
         protected WKFireDamageSource(String name) {

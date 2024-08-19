@@ -1,12 +1,11 @@
 package cf.witcheskitchen.common.item;
 
-import net.minecraft.client.item.TooltipContext;
+import cf.witcheskitchen.common.component.WKComponents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,9 +15,10 @@ public class TaglockItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        if (stack.hasNbt() && stack.getOrCreateNbt().contains("Name")) {
-            tooltip.add(Text.literal(stack.getOrCreateNbt().getString("Name")).setStyle(Style.EMPTY.withColor(0xF90C19)));
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        if (stack.contains(WKComponents.TAGLOCK)) {
+            var taglock = stack.get(WKComponents.TAGLOCK);
+            tooltip.add(Text.literal(taglock.name()).setStyle(Style.EMPTY.withColor(0xF90C19)));
         }
     }
 }

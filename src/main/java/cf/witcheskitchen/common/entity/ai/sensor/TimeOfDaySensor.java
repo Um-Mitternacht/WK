@@ -17,7 +17,7 @@ public class TimeOfDaySensor<E extends LivingEntity> extends PredicateSensor<E, 
     private static final List<MemoryModuleType<?>> MEMORIES = ObjectArrayList.of(WKMemoryModuleTypes.IS_NIGHT);
 
     public TimeOfDaySensor() {
-        super((entity2, entity) -> entity.world.isNight());
+        super((entity2, entity) -> entity.getWorld().isNight());
     }
 
     @Override

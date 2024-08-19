@@ -4,6 +4,12 @@ import cf.witcheskitchen.api.entity.WKTameableEntity;
 import cf.witcheskitchen.common.entity.ai.FerretBrain;
 import cf.witcheskitchen.common.registry.WKEntityTypes;
 import cf.witcheskitchen.common.registry.WKSoundEvents;
+import mod.azure.azurelib.common.api.common.animatable.GeoEntity;
+import mod.azure.azurelib.common.internal.common.constant.DefaultAnimations;
+import mod.azure.azurelib.common.internal.common.util.AzureLibUtil;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.*;
+import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -41,12 +47,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.constant.DefaultAnimations;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.SplittableRandom;
@@ -58,11 +58,11 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
     public static final TrackedData<Boolean> NIGHT = DataTracker.registerData(FerretEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     public static final Ingredient BREEDING_INGREDIENTS = Ingredient.ofItems(Items.RABBIT, Items.COOKED_RABBIT, Items.CHICKEN, Items.COOKED_CHICKEN, Items.EGG, Items.RABBIT_FOOT, Items.TURTLE_EGG);
     public static final Item TAMING_INGREDIENT = Items.EGG;
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public FerretEntity(EntityType<? extends TameableEntity> entityType, World world) {
         super(entityType, world);
-        this.setTamed(false);
+        this.setTamed(false, true);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -79,10 +79,10 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
 
     @Nullable
     @Override
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         int var = new SplittableRandom().nextInt(1, 13);
         this.setVariant(var);
-        return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+        return super.initialize(world, difficulty, spawnReason, entityData);
     }
 
     @Override
@@ -97,8 +97,8 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
-        this.dataTracker.startTracking(NIGHT, false);
-        this.dataTracker.startTracking(TARGET_ID, 0);
+        this.dataTracker.set(NIGHT, false);
+        this.dataTracker.set(TARGET_ID, 0);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
 
     @Nullable
     public LivingEntity getTargetFromData() {
-        return this.world.getEntityById(this.getDataTracker().get(TARGET_ID)) instanceof LivingEntity livingEntity ? livingEntity : null;
+        return this.getWorld().getEntityById(this.getDataTracker().get(TARGET_ID)) instanceof LivingEntity livingEntity ? livingEntity : null;
     }
 
     @Override
@@ -142,27 +142,27 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         final ItemStack stack = player.getStackInHand(hand);
         if (!isTamed() && stack.isOf(TAMING_INGREDIENT)) {
-            if (world.isClient()) {
+            if (getWorld().isClient()) {
                 return ActionResult.CONSUME;
             } else {
                 if (!player.isCreative()) {
                     stack.decrement(1);
                 }
-                if (!world.isClient()) {
+                if (!getWorld().isClient()) {
                     if (this.random.nextInt(3) == 0) {
                         super.setOwner(player);
                         this.navigation.recalculatePath();
                         this.setTarget(null);
                         setSitting(true);
-                        this.world.sendEntityStatus(this, (byte) 7);
+                        this.getWorld().sendEntityStatus(this, (byte) 7);
                     } else {
-                        this.world.sendEntityStatus(this, (byte) 6);
+                        this.getWorld().sendEntityStatus(this, (byte) 6);
                     }
                 }
                 return ActionResult.SUCCESS;
             }
         }
-        if (isTamed() && !this.world.isClient() && hand == Hand.MAIN_HAND) {
+        if (isTamed() && !this.getWorld().isClient() && hand == Hand.MAIN_HAND) {
             setSitting(!isSitting());
             return ActionResult.SUCCESS;
         }
@@ -180,7 +180,7 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
     @Override
     public boolean damage(DamageSource source, float amount) {
         boolean bl = super.damage(source, amount);
-        if (this.world.isClient) {
+        if (this.getWorld().isClient) {
             return false;
         } else {
             if (bl && source.getAttacker() instanceof LivingEntity l) {
@@ -209,13 +209,13 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
         UUID uUID = this.getOwnerUuid();
         if (uUID != null && ferretEntity != null) {
             ferretEntity.setOwnerUuid(uUID);
-            ferretEntity.setTamed(true);
+            ferretEntity.setTamed(true, true);
         }
         return ferretEntity;
     }
 
     @Override
-    public boolean canBeLeashedBy(PlayerEntity player) {
+    public boolean canBeLeashed() {
         return true;
     }
 

@@ -11,13 +11,13 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.LivingTargetCache;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.VisibleLivingEntitiesCache;
 import net.minecraft.entity.ai.brain.sensor.Sensor;
 import net.minecraft.entity.ai.brain.task.LookAroundTask;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
+import net.minecraft.entity.ai.brain.task.MoveToTargetTask;
 import net.minecraft.entity.ai.brain.task.StayAboveWaterTask;
-import net.minecraft.entity.ai.brain.task.WanderAroundTask;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
@@ -64,7 +64,7 @@ public class FerretBrain {
                 new DontMoveTask(),
                 new StayAboveWaterTask(0.6f),
                 new LookAroundTask(45, 90),
-                new WanderAroundTask()
+                new MoveToTargetTask()
         );
     }
 
@@ -95,9 +95,9 @@ public class FerretBrain {
             return optional;
         }
         if (brain.hasMemoryModule(MemoryModuleType.VISIBLE_MOBS)) {
-            Optional<VisibleLivingEntitiesCache> visibleLivingEntitiesCache = ferretEntity.getBrain().getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
+            Optional<LivingTargetCache> visibleLivingEntitiesCache = ferretEntity.getBrain().getOptionalMemory(MemoryModuleType.VISIBLE_MOBS);
             if (visibleLivingEntitiesCache.isPresent()) {
-                return visibleLivingEntitiesCache.get().m_yzezovsk(UNTAMED_TARGET_PREDICATE);
+                return visibleLivingEntitiesCache.get().findFirst(UNTAMED_TARGET_PREDICATE);
             }
         }
         return Optional.empty();

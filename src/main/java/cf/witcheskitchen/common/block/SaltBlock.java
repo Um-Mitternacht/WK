@@ -17,7 +17,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -28,7 +27,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -48,7 +46,7 @@ public class SaltBlock extends Block {
 
     private final BlockState dotState;
 
-    public SaltBlock(QuiltBlockSettings settings) {
+    public SaltBlock(AbstractBlock.Settings settings) {
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(WIRE_CONNECTION_NORTH, WireConnection.NONE).with(WIRE_CONNECTION_EAST, WireConnection.NONE).with(WIRE_CONNECTION_SOUTH, WireConnection.NONE).with(WIRE_CONNECTION_WEST, WireConnection.NONE));
         this.dotState = this.getDefaultState().with(WIRE_CONNECTION_NORTH, WireConnection.SIDE).with(WIRE_CONNECTION_EAST, WireConnection.SIDE).with(WIRE_CONNECTION_SOUTH, WireConnection.SIDE).with(WIRE_CONNECTION_WEST, WireConnection.SIDE);
@@ -154,7 +152,7 @@ public class SaltBlock extends Block {
                 if (spiritual && !WKApi.isGreaterDemon(livingEntity)) {
                     boolean onSalt = world.getBlockState(livingEntity.getBlockPos().add(0, 0, 0)).getBlock() instanceof SaltBlock;
                     if (!onSalt) {
-                        return getSaltShape(livingEntity.stepHeight);
+                        return getSaltShape(livingEntity.getStepHeight());
                     } else {
                         livingEntity.setOnFireFor(1);
                     }
@@ -343,7 +341,7 @@ public class SaltBlock extends Block {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (player.getAbilities().allowModifyWorld) {
             if (isFullyConnected(state) || isNotConnected(state)) {
                 BlockState blockState = isFullyConnected(state) ? this.getDefaultState() : this.dotState;

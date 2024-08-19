@@ -13,7 +13,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -31,11 +30,10 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -77,7 +75,7 @@ public class WitchesCauldronBlock extends WKBlockWithEntity implements Waterlogg
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlayerFacing()).with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+        return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection()).with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
     @Override
@@ -102,8 +100,10 @@ public class WitchesCauldronBlock extends WKBlockWithEntity implements Waterlogg
     }
 
     // Cauldron fill/drain fluid logic
+
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        final var hand = player.getActiveHand();
         final var blockEntity = world.getBlockEntity(pos);
         final var heldStack = player.getStackInHand(hand);
         final var side = hit.getSide();
@@ -181,7 +181,7 @@ public class WitchesCauldronBlock extends WKBlockWithEntity implements Waterlogg
                 }
             }
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
@@ -197,7 +197,7 @@ public class WitchesCauldronBlock extends WKBlockWithEntity implements Waterlogg
                     }
                 } else if (entity instanceof LivingEntity living) {
                     if (state.get(LIT)) {
-                        living.damage(DamageSource.LAVA, 4);
+                        living.damage(entity.getDamageSources().lava(), 4);
                         living.setFireTicks(TimeHelper.toTicks(15));
                     }
                 }
@@ -207,7 +207,7 @@ public class WitchesCauldronBlock extends WKBlockWithEntity implements Waterlogg
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, RandomGenerator random) {
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         final BlockEntity entity = world.getBlockEntity(pos);
         if (entity instanceof WitchesCauldronBlockEntity cauldron) {
             if (cauldron.isPowered()) {

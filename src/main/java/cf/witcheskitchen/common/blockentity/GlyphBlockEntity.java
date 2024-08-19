@@ -4,6 +4,7 @@ import cf.witcheskitchen.api.block.entity.WKBlockEntity;
 import cf.witcheskitchen.api.block.entity.WKBlockEntityWithInventory;
 import cf.witcheskitchen.api.ritual.Ritual;
 import cf.witcheskitchen.api.ritual.RitualCircle;
+import cf.witcheskitchen.common.recipe.MultipleStackRecipeInput;
 import cf.witcheskitchen.common.recipe.RitualRecipe;
 import cf.witcheskitchen.common.registry.WKBlockEntityTypes;
 import cf.witcheskitchen.common.registry.WKBlocks;
@@ -16,10 +17,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +74,7 @@ public class GlyphBlockEntity extends WKBlockEntityWithInventory {
         ItemStack handStack = player.getMainHandStack();
 
         if (handStack.isEmpty()) {
-            RitualRecipe ritualRecipeNoCircleCheck = world.getRecipeManager().listAllOfType(WKRecipeTypes.RITUAL_RECIPE_TYPE).stream().filter(recipe -> recipe.matches(this.manager, world)).findFirst().orElse(null);
+            RitualRecipe ritualRecipeNoCircleCheck = world.getRecipeManager().listAllOfType(WKRecipeTypes.RITUAL_RECIPE_TYPE).stream().filter(entry -> entry.value().matches(new MultipleStackRecipeInput(this.manager.getStacks()), world)).findFirst().map(RecipeEntry::value).orElse(null);
             if (ritualRecipeNoCircleCheck != null) {
                 Set<RitualCircle> circle = ritualRecipeNoCircleCheck.circleSet;
                 if (checkValidCircle(world, pos, circle)) {
@@ -103,7 +105,7 @@ public class GlyphBlockEntity extends WKBlockEntityWithInventory {
             for (EntityType<?> entityType : ritualSacrifices) {
                 LivingEntity foundEntity = getClosestEntity(livingEntityList, entityType, this.pos);
                 if (foundEntity != null) {
-                    foundEntity.damage(DamageSource.MAGIC, Integer.MAX_VALUE);
+                    foundEntity.damage(world.getDamageSources().magic(), Integer.MAX_VALUE);
                 }
             }
             return true;
@@ -160,15 +162,15 @@ public class GlyphBlockEntity extends WKBlockEntityWithInventory {
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
         progress = nbt.getInt("Progress");
-        ritual = WKRegistries.RITUAL.get(new Identifier(nbt.getString("Ritual")));
+        ritual = WKRegistries.RITUAL.get(Identifier.tryParse(nbt.getString("Ritual")));
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.writeNbt(nbt, registryLookup);
         nbt.putInt("Progress", progress);
         nbt.putString("Ritual", ritual.toString());
     }

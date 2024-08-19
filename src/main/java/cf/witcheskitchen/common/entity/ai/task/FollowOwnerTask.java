@@ -3,14 +3,14 @@ package cf.witcheskitchen.common.entity.ai.task;
 import cf.witcheskitchen.common.registry.WKMemoryModuleTypes;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.ai.brain.*;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
 import java.util.Optional;
 
-public class FollowOwnerTask extends Task<PathAwareEntity> {
+public class FollowOwnerTask extends MultiTickTask<PathAwareEntity> {
     public FollowOwnerTask() {
         super(ImmutableMap.of(
                 MemoryModuleType.LOOK_TARGET, MemoryModuleState.REGISTERED,

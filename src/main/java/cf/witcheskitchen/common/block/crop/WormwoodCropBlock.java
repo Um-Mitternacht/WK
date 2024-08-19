@@ -68,7 +68,7 @@ public class WormwoodCropBlock extends WKTallCropBlock implements CropVariants {
     @Override
     protected ItemStack getSeedsItemStack() {
         NbtCompound nbt = new NbtCompound();
-        SeedTypeHelper.toNbt(nbt, type.getName(), type.getType(), type.getColor());
+        SeedTypeHelper.toComponent(nbt, type.getName(), type.getType(), type.getColor());
         ItemStack seed = new ItemStack(WKItems.WORMWOOD_SEEDS);
         seed.getOrCreateNbt().copyFrom(nbt);
         return seed;

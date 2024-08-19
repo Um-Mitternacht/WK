@@ -47,7 +47,7 @@ public class AnimatableMeleeAttack<E extends MobEntity> extends DelayedBehaviour
     protected boolean shouldRun(ServerWorld world, E entity) {
         this.target = BrainUtils.getTargetOfEntity(entity);
 
-        return entity.getVisibilityCache().canSee(this.target) && entity.m_kxhmsdlh(this.target);
+        return entity.getVisibilityCache().canSee(this.target) && entity.isInAttackRange(this.target);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class AnimatableMeleeAttack<E extends MobEntity> extends DelayedBehaviour
         if (this.target == null)
             return;
 
-        if (!entity.getVisibilityCache().canSee(this.target) || !entity.m_kxhmsdlh(this.target))
+        if (!entity.getVisibilityCache().canSee(this.target) || !entity.isInAttackRange(this.target))
             return;
 
         entity.tryAttack(this.target);

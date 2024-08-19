@@ -11,19 +11,19 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class CopperWitchesOvenBlock extends WitchesOvenBlock implements Oxidizable {
-    private final Oxidizable.OxidizationLevel oxidizationLevel;
+    private final Oxidizable.OxidationLevel oxidizationLevel;
 
-    public CopperWitchesOvenBlock(Settings settings, Oxidizable.OxidizationLevel oxidizationLevel) {
+    public CopperWitchesOvenBlock(Settings settings, Oxidizable.OxidationLevel oxidizationLevel) {
         super(settings);
         this.oxidizationLevel = oxidizationLevel;
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, RandomGenerator random) {
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         this.tickDegradation(state, world, pos, random);
     }
 
@@ -43,7 +43,7 @@ public class CopperWitchesOvenBlock extends WitchesOvenBlock implements Oxidizab
     }
 
     @Override
-    public OxidizationLevel getDegradationLevel() {
+    public OxidationLevel getDegradationLevel() {
         return this.oxidizationLevel;
     }
 }

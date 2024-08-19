@@ -6,10 +6,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.LookTargetUtil;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.server.world.ServerWorld;
 
-public class FerretMeleeAttackTask extends Task<FerretEntity> {
+public class FerretMeleeAttackTask extends MultiTickTask<FerretEntity> {
     private final int interval;
     private LivingEntity target;
     private int coolDown = 0;
@@ -25,7 +25,7 @@ public class FerretMeleeAttackTask extends Task<FerretEntity> {
 
     protected boolean shouldRun(ServerWorld serverWorld, FerretEntity ferret) {
         LivingEntity livingEntity = this.getAttackTarget(ferret);
-        return LookTargetUtil.isVisibleInMemory(ferret, livingEntity) && ferret.m_kxhmsdlh(livingEntity);
+        return LookTargetUtil.isVisibleInMemory(ferret, livingEntity) && ferret.isInAttackRange(livingEntity);
     }
 
     @Override

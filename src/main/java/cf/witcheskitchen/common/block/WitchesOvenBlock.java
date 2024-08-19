@@ -4,9 +4,10 @@ import cf.witcheskitchen.api.block.WKBlock;
 import cf.witcheskitchen.api.util.WKUtils;
 import cf.witcheskitchen.common.blockentity.WitchesOvenBlockEntity;
 import cf.witcheskitchen.common.registry.WKDamageSources;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,13 +27,12 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 @SuppressWarnings("deprecation")
 public class WitchesOvenBlock extends WKBlock implements Waterloggable {
@@ -68,7 +68,7 @@ public class WitchesOvenBlock extends WKBlock implements Waterloggable {
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlayerFacing().getOpposite()).with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
+        return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection().getOpposite()).with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).getFluid() == Fluids.WATER);
     }
 
     @Override
@@ -115,8 +115,8 @@ public class WitchesOvenBlock extends WKBlock implements Waterloggable {
     }
 
     @Override
-    @ClientOnly
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, RandomGenerator random) {
+    @Environment(EnvType.CLIENT)
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (state.get(LIT)) {
             CampfireBlock.spawnSmokeParticle(world, pos, false, false);
             Blocks.FURNACE.randomDisplayTick(state, world, pos, random);
@@ -127,9 +127,7 @@ public class WitchesOvenBlock extends WKBlock implements Waterloggable {
     public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
         super.onSteppedOn(world, pos, state, entity);
         if (state.get(LIT) && !entity.isFireImmune() && entity instanceof LivingEntity) {
-            if (!EnchantmentHelper.hasFrostWalker((LivingEntity) entity)) {
-                entity.damage(WKDamageSources.ON_OVEN, 1);
-            }
+            entity.damage(WKDamageSources.ON_OVEN, 1);
         }
     }
 
