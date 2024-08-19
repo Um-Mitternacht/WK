@@ -9,8 +9,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-
 /**
  * <h3>Represents a stack of fluids.</h3>.
  *
@@ -107,12 +105,12 @@ public final class FluidStack implements Comparable<FluidStack> {
      *
      * @see <a href="#nbt-operations">Fluid Stack NBT Operations</a>
      */
-    @Nonnull
+    @NotNull
     public static FluidStack fromNbt(NbtCompound nbt) {
         if (nbt == null) {
             return FluidStack.EMPTY;
         }
-        final Fluid fluid = Registries.FLUID.get(new Identifier(nbt.getString(FLUID_KEY)));
+        final Fluid fluid = Registries.FLUID.get(Identifier.of(nbt.getString(FLUID_KEY)));
         final int amount = nbt.getInt("Amount");
         final FluidStack stack = new FluidStack(fluid, amount);
         if (nbt.contains(INTERNAL_NBT_DATA)) {
@@ -154,7 +152,7 @@ public final class FluidStack implements Comparable<FluidStack> {
      * @param other {@link FluidStack} to compare
      * @return Whether this stack is equal to the other
      */
-    public boolean isEqualIgnoreNbt(@Nonnull FluidStack other) {
+    public boolean isEqualIgnoreNbt(@NotNull FluidStack other) {
         return this.hasFluid(other.getFluid());
     }
 

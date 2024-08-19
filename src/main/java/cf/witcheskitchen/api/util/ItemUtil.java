@@ -95,7 +95,7 @@ public final class ItemUtil {
                 return true;
             }
             //Match nbt
-            return ItemStack.areNbtEqual(stackA, stackB);
+            return ItemStack.areItemsAndComponentsEqual(stackA, stackB);
         }
     }
 

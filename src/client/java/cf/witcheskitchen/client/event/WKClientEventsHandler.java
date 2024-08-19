@@ -5,17 +5,17 @@ import cf.witcheskitchen.common.component.WKComponents;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 
 public class WKClientEventsHandler {
 
 
-    public static class MagicHudRender extends DrawableHelper implements HudRenderCallback {
+    public static class MagicHudRender implements HudRenderCallback {
         @Override
-        public void onHudRender(MatrixStack matrixStack, float tickDelta) {
+        public void onHudRender(DrawContext context, RenderTickCounter tickCounter) {
             final MinecraftClient client = MinecraftClient.getInstance();
             ClientPlayerEntity player = client.player;
             if (player == null) return;
@@ -27,23 +27,21 @@ public class WKClientEventsHandler {
                 int magic = component.getMagic();
                 int magicCap = component.getMagicCap();
 
-                matrixStack.push();
-                matrixStack.translate(width / 2f - 112, height - 48, 0);
+                context.getMatrices().push();
+                context.getMatrices().translate(width / 2f - 112, height - 48, 0);
                 RenderSystem.depthMask(false);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-                RenderSystem.setShaderTexture(0, getEmptyTexture());
-                drawTexture(matrixStack, 0, 0, 0, 0, 20, 42, 20, 42);
+                context.drawTexture(getEmptyTexture(), 0, 0, 0, 0, 20, 42, 20, 42);
 
-                RenderSystem.setShaderTexture(0, getBarTexture());
                 int p = (magic * 42 / magicCap);
-                drawTexture(matrixStack, 0, 42 - p, 0, -p, 20, p, 20, 42);
+                context.drawTexture(getBarTexture(), 0, 42 - p, 0, -p, 20, p, 20, 42);
                 //this.drawTexture(matrices, x, y - n, u, v - n, w, n);
                 RenderSystem.depthMask(true);
                 RenderSystem.disableBlend();
-                matrixStack.pop();
+                context.getMatrices().pop();
             });
         }
 

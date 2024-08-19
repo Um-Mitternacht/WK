@@ -2,9 +2,9 @@ package cf.witcheskitchen.client.render.blockentity;
 
 import cf.witcheskitchen.api.event.network.MagicSparkleParticleEvent;
 import cf.witcheskitchen.api.fluid.FluidStack;
-import cf.witcheskitchen.api.util.RenderHelper;
 import cf.witcheskitchen.api.util.TimeHelper;
 import cf.witcheskitchen.client.particle.MagicSparkleParticle;
+import cf.witcheskitchen.client.util.RenderHelper;
 import cf.witcheskitchen.common.blockentity.WitchesCauldronBlockEntity;
 import cf.witcheskitchen.common.registry.WKParticleTypes;
 import com.mojang.blaze3d.vertex.VertexConsumer;

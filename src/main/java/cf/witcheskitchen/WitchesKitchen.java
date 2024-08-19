@@ -21,8 +21,6 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
-
 public class WitchesKitchen implements ModInitializer {
 
     public static final String MODID = "witcheskitchen";
@@ -35,7 +33,7 @@ public class WitchesKitchen implements ModInitializer {
     @Override
     public void onInitialize() {
         WitchesKitchenConfig.init(MODID, WitchesKitchenConfig.class);
-        WKPacketTypes.init(EnvType.SERVER);
+        WKPacketTypes.init();
         WKBlocks.init();
         WKItemComponents.init();
         WKItems.init();

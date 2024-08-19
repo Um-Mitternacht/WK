@@ -1,5 +1,7 @@
 package cf.witcheskitchen.api.block.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -7,9 +9,9 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 public class WKBlockEntity extends BlockEntity implements BlockEntityTicker<WKBlockEntity> {
     public boolean needsSync;
@@ -19,9 +21,9 @@ public class WKBlockEntity extends BlockEntity implements BlockEntityTicker<WKBl
     }
 
     @Override
-    public void readNbt(NbtCompound pTag) {
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         needsSync = true;
-        super.readNbt(pTag);
+        super.readNbt(nbt, registryLookup);
     }
 
     public void sync(World world, BlockPos pos) {
@@ -39,7 +41,7 @@ public class WKBlockEntity extends BlockEntity implements BlockEntityTicker<WKBl
 
     @Override
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.of(this);
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     /**
@@ -61,7 +63,7 @@ public class WKBlockEntity extends BlockEntity implements BlockEntityTicker<WKBl
     }
 
     // Client-side Tick
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public void onClientTick(World world, BlockPos pos, BlockState state, WKBlockEntity blockEntity) {
 
     }

@@ -3,9 +3,8 @@ package cf.witcheskitchen.api.fluid;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 /**
@@ -33,7 +32,7 @@ public class FluidTank implements IFluidStorage {
      * Empty {@link FluidStack} for empty Tanks
      * As annotated, an empty {@link FluidStack} is never null.
      */
-    @Nonnull
+    @NotNull
     protected FluidStack stack = FluidStack.EMPTY;
 
 
@@ -138,6 +137,7 @@ public class FluidTank implements IFluidStorage {
         }
     }
 
+    // TODO: refactor to use data components
     /**
      * Reads the content of this tank.
      * Must be read from {@link net.minecraft.block.entity.BlockEntity#readNbt(NbtCompound)}

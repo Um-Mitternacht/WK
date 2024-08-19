@@ -1,8 +1,7 @@
 package cf.witcheskitchen.api.fluid;
 
 import net.minecraft.util.math.Direction;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -58,7 +57,7 @@ public interface IStorageHandler {
      *
      * @return The FluidStack from the Tank.
      */
-    @Nonnull
+    @NotNull
     FluidStack getFluidStack();
 
     /**
@@ -70,7 +69,7 @@ public interface IStorageHandler {
      * @param side  {@link Direction} from where the fluid is draining to.
      * @return {@link FluidStack} The FluidStack that represents the new storage of the tank.
      */
-    @Nonnull
+    @NotNull
     FluidStack drain(FluidStack stack, Direction side);
 
     /**
@@ -82,7 +81,7 @@ public interface IStorageHandler {
      * @param side   {@link Direction} from where the fluid is draining to.
      * @return {@link FluidStack} The FluidStack that represents the new storage of the tank.
      */
-    @Nonnull
+    @NotNull
     FluidStack drain(int amount, Direction side);
 
 }

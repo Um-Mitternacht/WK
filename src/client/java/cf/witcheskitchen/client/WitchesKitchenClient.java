@@ -5,6 +5,8 @@ import cf.witcheskitchen.client.gui.screen.WitchesOvenScreen;
 import cf.witcheskitchen.client.particle.BubbleParticle;
 import cf.witcheskitchen.client.particle.MagicSparkleParticle;
 import cf.witcheskitchen.client.particle.WKSplashParticle;
+import cf.witcheskitchen.client.registry.WKClientEventsRegistry;
+import cf.witcheskitchen.client.registry.WKClientPacketTypes;
 import cf.witcheskitchen.client.registry.WKColorProviderRegistry;
 import cf.witcheskitchen.client.registry.WKRendererRegistry;
 import cf.witcheskitchen.common.item.WKItemComponents;
@@ -43,7 +45,8 @@ public class WitchesKitchenClient implements ClientModInitializer {
 
         WKColorProviderRegistry.init();
         WKRendererRegistry.init();
-        WKPacketTypes.init(EnvType.CLIENT);
+        WKClientPacketTypes.init();
+        WKClientEventsRegistry.init();
         WKEventsRegistry.init(EnvType.CLIENT);
     }
 }

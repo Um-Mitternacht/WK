@@ -1,10 +1,10 @@
 package cf.witcheskitchen.api.util;
 
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import org.quiltmc.qsl.networking.api.PlayerLookup;
 
 import java.util.function.Consumer;
 

@@ -5,15 +5,10 @@ import cf.witcheskitchen.api.ritual.RitualCircle;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -131,7 +126,7 @@ public final class RecipeUtils {
     public static DefaultedList<Ingredient> deserializeIngredients(JsonArray array) {
         final DefaultedList<Ingredient> ingredients = DefaultedList.of();
         for (int i = 0; i < array.size(); i++) {
-            final Ingredient input = Ingredient.fromJson(array.get(i));
+            final Ingredient input = Ingredient.ALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, array.get(i)).getOrThrow();
             if (!input.isEmpty()) {
                 ingredients.add(input);
             }
@@ -151,25 +146,15 @@ public final class RecipeUtils {
      * @return brand-new Item deserialized
      */
     public static @NotNull ItemStack deserializeStack(JsonObject object) {
-        final Identifier id = new Identifier(JsonHelper.getString(object, "item"));
-        final Item item = Registries.ITEM.get(id);
-        if (Items.AIR == item) {
-            throw new IllegalStateException("Invalid item: " + item);
-        }
-        int count = 1;
-        if (object.has("count")) {
-            count = JsonHelper.getInt(object, "count");
-        }
-        final ItemStack stack = new ItemStack(item, count);
-        if (object.has("nbt")) {
-            final NbtCompound tag = (NbtCompound) Dynamic.convert(JsonOps.INSTANCE, NbtOps.INSTANCE, object.get("nbt"));
-            stack.setNbt(tag);
+        ItemStack stack = ItemStack.CODEC.parse(JsonOps.INSTANCE, object).getOrThrow();
+        if (stack.isEmpty()) {
+            throw new IllegalStateException("Stack is empty: " + stack.getItem() + " (" + stack.getCount() + ")");
         }
         return stack;
     }
 
     public static @Nullable EntityType<?> deserializeEntityType(JsonObject object) {
-        final Identifier id = new Identifier(JsonHelper.getString(object, "entity"));
+        final Identifier id = Identifier.tryParse(JsonHelper.getString(object, "entity"));
         return Registries.ENTITY_TYPE.get(id);
     }
 
@@ -189,7 +174,7 @@ public final class RecipeUtils {
     public static DefaultedList<Ingredient> getIngredients(JsonArray json) {
         DefaultedList<Ingredient> ingredients = DefaultedList.of();
         for (int i = 0; i < json.size(); i++) {
-            Ingredient ingredient = Ingredient.fromJson(json.get(i));
+            Ingredient ingredient = Ingredient.ALLOW_EMPTY_CODEC.parse(JsonOps.INSTANCE, json.get(i)).getOrThrow();
             if (!ingredient.isEmpty()) {
                 ingredients.add(ingredient);
             }

@@ -30,15 +30,24 @@ public interface WKStatusEffects {
     RegistryEntry<StatusEffect> COOLDOWN = create("cooldown", new CooldownStatusEffect(StatusEffectCategory.NEUTRAL, 0x1F75FE));
     RegistryEntry<StatusEffect> GROWTH = create("growth", new GrowthStatusEffect(StatusEffectCategory.BENEFICIAL, 0x4F7942));
     RegistryEntry<StatusEffect> LOVE = create("love", new LoveStatusEffect(StatusEffectCategory.BENEFICIAL, 0xFFB7C5));
-    RegistryEntry<StatusEffect> PARALYSIS = create("paralysis", new ParalysisStatusEffect(StatusEffectCategory.HARMFUL, 0xFADA5E)).addAttributeModifier(ReachEntityAttributes.REACH, "76d02fc2-c274-11ed-afa1-0242ac120002", -9.0D, EntityAttributeModifier.Operation.ADDITION).addAttributeModifier(ReachEntityAttributes.ATTACK_RANGE, "7c45b0e4-c274-11ed-afa1-0242ac120002", -9.D, EntityAttributeModifier.Operation.ADDITION);
+    RegistryEntry<StatusEffect> PARALYSIS = create("paralysis", new ParalysisStatusEffect(StatusEffectCategory.HARMFUL, 0xFADA5E)
+        .addAttributeModifier(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE, WitchesKitchen.id("paralysis_decreased_reach"), -9.0D, EntityAttributeModifier.Operation.ADD_VALUE)
+        .addAttributeModifier(EntityAttributes.PLAYER_ENTITY_INTERACTION_RANGE, WitchesKitchen.id("paralysis_decreased_entity_reach"), -9.D, EntityAttributeModifier.Operation.ADD_VALUE));
     RegistryEntry<StatusEffect> PHASING = create("phasing", new PhasingStatusEffect(StatusEffectCategory.NEUTRAL, 0x7851A9));
     RegistryEntry<StatusEffect> SHADOWS = create("shadows", new PhasingStatusEffect(StatusEffectCategory.BENEFICIAL, 0x86608E));
-    RegistryEntry<StatusEffect> CORROSION = create("corrosion", new CorrosionStatusEffect(StatusEffectCategory.HARMFUL, 0x3FFF00)).addAttributeModifier(EntityAttributes.GENERIC_ARMOR, "e8506ffe-e2b4-4f19-8669-becb8e3eb666", -4D, EntityAttributeModifier.Operation.ADDITION).addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, "1845f14c-5411-4380-8be7-85e81317523a", -2D, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
-    RegistryEntry<StatusEffect> REINFORCEMENT = create("reinforcement", new ReinforcementStatusEffect(StatusEffectCategory.BENEFICIAL, 0x4000FF)).addAttributeModifier(EntityAttributes.GENERIC_ARMOR, "52823351-ea91-4db3-958d-1b1ce3804dd6", 4D, EntityAttributeModifier.Operation.ADDITION).addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, "ec255b60-8b01-450b-8538-17a8a28e4aaf", 2D, EntityAttributeModifier.Operation.MULTIPLY_TOTAL);
+    RegistryEntry<StatusEffect> CORROSION = create("corrosion", new CorrosionStatusEffect(StatusEffectCategory.HARMFUL, 0x3FFF00)
+        .addAttributeModifier(EntityAttributes.GENERIC_ARMOR, WitchesKitchen.id("corrosion_armor_decrease"), -4D, EntityAttributeModifier.Operation.ADD_VALUE)
+        .addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, WitchesKitchen.id("corrosion_armor_toughness_decrease"), -2D, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    RegistryEntry<StatusEffect> REINFORCEMENT = create("reinforcement", new ReinforcementStatusEffect(StatusEffectCategory.BENEFICIAL, 0x4000FF)
+        .addAttributeModifier(EntityAttributes.GENERIC_ARMOR, WitchesKitchen.id("reinforcement_armor"), 4D, EntityAttributeModifier.Operation.ADD_VALUE)
+        .addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, WitchesKitchen.id("reinforcement_armor_toughness"), 2D, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     RegistryEntry<StatusEffect> FELIFORM = create("feliform", new FeliformStatusEffect(StatusEffectCategory.BENEFICIAL, 0x228B22));
     RegistryEntry<StatusEffect> BUG_SPRAY = create("bug_spray", new BugSprayStatusEffect(StatusEffectCategory.BENEFICIAL, 0x32CD32));
-    RegistryEntry<StatusEffect> LONG_REACH = create("long_reach", new LongReachStatusEffect(StatusEffectCategory.BENEFICIAL, 0x964a6e).addAttributeModifier(ReachEntityAttributes.REACH, "03f26044-be99-11ed-afa1-0242ac120002", 5.5D, EntityAttributeModifier.Operation.ADDITION).addAttributeModifier(ReachEntityAttributes.ATTACK_RANGE, "8827ff04-be99-11ed-afa1-0242ac120002", 4.5D, EntityAttributeModifier.Operation.ADDITION));
-    RegistryEntry<StatusEffect> LONG_STRIDE = create("long_stride", new LongStrideStatusEffect(StatusEffectCategory.BENEFICIAL, 0xB7410E)).addAttributeModifier(StepHeightEntityAttributeMain.STEP_HEIGHT, "aac36d3e-bf87-4675-8763-53933a74ebfb", 1.25D, EntityAttributeModifier.Operation.ADDITION);
+    RegistryEntry<StatusEffect> LONG_REACH = create("long_reach", new LongReachStatusEffect(StatusEffectCategory.BENEFICIAL, 0x964a6e)
+        .addAttributeModifier(EntityAttributes.PLAYER_BLOCK_INTERACTION_RANGE, WitchesKitchen.id("long_reach"), 5.5D, EntityAttributeModifier.Operation.ADD_VALUE)
+        .addAttributeModifier(EntityAttributes.PLAYER_ENTITY_INTERACTION_RANGE, WitchesKitchen.id("long_attack_reach"), 4.5D, EntityAttributeModifier.Operation.ADD_VALUE));
+    RegistryEntry<StatusEffect> LONG_STRIDE = create("long_stride", new LongStrideStatusEffect(StatusEffectCategory.BENEFICIAL, 0xB7410E)
+        .addAttributeModifier(EntityAttributes.GENERIC_STEP_HEIGHT, WitchesKitchen.id("long_stride"), 1.25D, EntityAttributeModifier.Operation.ADD_VALUE));
 
     static List<ObjectDefinition<StatusEffect>> getStatusEffects() {
         return Collections.unmodifiableList(STATUS_EFFECTS);

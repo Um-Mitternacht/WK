@@ -57,6 +57,7 @@ public class SeedTypeHelper {
     }
 
     public static MutableText getSeedTypeText(ItemStack stack) {
+
         NbtList nbtList = stack.getOrCreateNbt().getList("Variant", NbtElement.COMPOUND_TYPE);
         if (!nbtList.isEmpty() && !nbtList.getCompound(1).isEmpty() && !nbtList.getCompound(2).isEmpty()) {
             String name = nbtList.getCompound(1).getString("Type");

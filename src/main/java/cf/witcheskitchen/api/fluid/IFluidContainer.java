@@ -2,8 +2,7 @@ package cf.witcheskitchen.api.fluid;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -21,21 +20,21 @@ public interface IFluidContainer {
     /**
      * @return The empty stack that is returned when this fluid container is empty
      */
-    @Nonnull
+    @NotNull
     ItemStack getEmptyStack();
 
     /**
      * @param fluid Fluid
      * @return The filled stack that is returned based on the FluidType when this fluid container is not empty
      */
-    @Nonnull
+    @NotNull
     ItemStack getFullStack(Fluid fluid);
 
     /**
      * @param stack ItemStack container
      * @return the FluidType for the container
      */
-    @Nonnull
+    @NotNull
     Fluid getFluidType(ItemStack stack);
 
 }

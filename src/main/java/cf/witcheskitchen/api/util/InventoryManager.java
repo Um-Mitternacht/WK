@@ -6,6 +6,7 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Vec3d;
 
@@ -64,9 +65,9 @@ public class InventoryManager<T extends BlockEntity> implements Inventory {
      *
      * @param data {@link NbtCompound} from your {@link BlockEntity} readNbt().
      */
-    public void readNbt(NbtCompound data) {
+    public void readNbt(NbtCompound data, RegistryWrapper.WrapperLookup registryLookup) {
         this.clear();
-        Inventories.readNbt(data, this.inventory);
+        Inventories.readNbt(data, this.inventory, registryLookup);
     }
 
     /**
@@ -76,8 +77,8 @@ public class InventoryManager<T extends BlockEntity> implements Inventory {
      *
      * @param data {@link NbtCompound} from your {@link BlockEntity} writeNbt().
      */
-    public void writeNbt(NbtCompound data) {
-        Inventories.writeNbt(data, this.inventory);
+    public void writeNbt(NbtCompound data, RegistryWrapper.WrapperLookup registryLookup) {
+        Inventories.writeNbt(data, this.inventory, registryLookup);
     }
 
     /**

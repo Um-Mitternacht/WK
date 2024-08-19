@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -27,11 +28,11 @@ public interface WKPotions {
     }
 
 
-    static StatusEffectInstance withEffect(StatusEffect effect, int duration) {
+    static StatusEffectInstance withEffect(RegistryEntry<StatusEffect> effect, int duration) {
         return new StatusEffectInstance(effect, duration, 0);
     }
 
-    static StatusEffectInstance withEffect(StatusEffect effect, int duration, int amplifier) {
+    static StatusEffectInstance withEffect(RegistryEntry<StatusEffect> effect, int duration, int amplifier) {
         return new StatusEffectInstance(effect, duration, amplifier);
     }
 

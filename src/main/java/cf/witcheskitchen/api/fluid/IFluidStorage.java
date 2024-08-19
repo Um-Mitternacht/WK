@@ -5,8 +5,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-
 /**
  * <p>
  * This interface represents a Fluid Storage. The user of this
@@ -37,7 +35,7 @@ public interface IFluidStorage {
      *
      * @return {@link FluidTank} that represents the <i>internal storage</i> of the tank.
      */
-    @Nonnull
+    @NotNull
     FluidStack getStack();
 
     /**
@@ -61,7 +59,7 @@ public interface IFluidStorage {
      * @param side   {@link Direction} from where the fluid is draining to.
      * @return {@link FluidStack} The FluidStack that represents the new storage of the tank.
      */
-    @Nonnull
+    @NotNull
     FluidStack drain(int amount, Direction side);
 
     /**
@@ -73,7 +71,7 @@ public interface IFluidStorage {
      * @param side  {@link Direction} from where the fluid is draining to.
      * @return {@link FluidStack} The FluidStack that represents the new storage of the tank.
      */
-    @Nonnull
+    @NotNull
     FluidStack drain(FluidStack stack, Direction side);
 
     /**
