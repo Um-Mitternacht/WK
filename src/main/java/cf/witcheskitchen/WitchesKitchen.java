@@ -1,7 +1,7 @@
 package cf.witcheskitchen;
 
+import cf.witcheskitchen.common.component.WKComponents;
 import cf.witcheskitchen.common.event.WKItemGroupEvents;
-import cf.witcheskitchen.common.item.WKItemComponents;
 import cf.witcheskitchen.common.registry.*;
 import cf.witcheskitchen.data.DimColorReloadListener;
 import cf.witcheskitchen.data.worldgen.WKConfiguredFeatures;
@@ -35,7 +35,7 @@ public class WitchesKitchen implements ModInitializer {
         WitchesKitchenConfig.init(MODID, WitchesKitchenConfig.class);
         WKPacketTypes.init();
         WKBlocks.init();
-        WKItemComponents.init();
+        WKComponents.init();
         WKItems.init();
         WKPotions.init();
         WKFoodComponents.init();

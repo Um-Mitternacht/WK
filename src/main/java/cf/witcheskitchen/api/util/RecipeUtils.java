@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.input.RecipeInput;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -47,7 +48,7 @@ public final class RecipeUtils {
      * @param endIndex    inclusive
      * @return If the inventory contains the inputs for the recipe.
      */
-    public static boolean matches(final Inventory inventory, final DefaultedList<Ingredient> ingredients, final int startIndex, final int endIndex) {
+    public static boolean matches(final RecipeInput inventory, final List<Ingredient> ingredients, final int startIndex, final int endIndex) {
         // Throw unexpected arguments away which lead to bugs
         Validate.isTrue(inventory != null);
         Validate.isTrue(ingredients != null);
@@ -64,7 +65,7 @@ public final class RecipeUtils {
         // This collection holds the valid stacks
         final var validStacks = new ArrayList<ItemStack>();
         for (int slot = startIndex; slot <= endIndex; slot += 1) {
-            final ItemStack stackInSlot = inventory.getStack(slot);
+            final ItemStack stackInSlot = inventory.getStackInSlot(slot);
             // All the empty stacks are discarded
             if (stackInSlot.isEmpty()) {
                 continue;

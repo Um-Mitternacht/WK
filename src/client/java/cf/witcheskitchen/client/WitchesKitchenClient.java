@@ -9,7 +9,7 @@ import cf.witcheskitchen.client.registry.WKClientEventsRegistry;
 import cf.witcheskitchen.client.registry.WKClientPacketTypes;
 import cf.witcheskitchen.client.registry.WKColorProviderRegistry;
 import cf.witcheskitchen.client.registry.WKRendererRegistry;
-import cf.witcheskitchen.common.item.WKItemComponents;
+import cf.witcheskitchen.common.component.WKComponents;
 import cf.witcheskitchen.common.registry.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -36,7 +36,7 @@ public class WitchesKitchenClient implements ClientModInitializer {
         WKBlocks.getBlocks().forEach(entry -> BlockRenderLayerMap.INSTANCE.putBlock(entry.object(), RenderLayer.getCutout()));//TODO eyo what is this, bad code, fix this
 
         ModelPredicateProviderRegistry.register(WKItems.WAYSTONE, Identifier.of("bound"), ((itemStack, clientWorld, livingEntity, i) -> {
-            if (itemStack.contains(WKItemComponents.BLOCK_POS)) {
+            if (itemStack.contains(WKComponents.BLOCK_POS)) {
                 return 1.0f;
             } else {
                 return 0.0f;

@@ -22,10 +22,10 @@ public class OvenCookingDisplay implements Display {
     private final float experience;
 
     public OvenCookingDisplay(OvenCookingRecipe recipe) {
-        this.input = EntryIngredients.ofIngredient(recipe.getInput());
-        this.outputs = Collections.singletonList(EntryIngredients.ofItemStacks(recipe.getOutputs()));
-        this.time = recipe.getTime();
-        this.experience = recipe.getXp();
+        this.input = EntryIngredients.ofIngredient(recipe.input());
+        this.outputs = Collections.singletonList(EntryIngredients.ofItemStacks(recipe.outputs()));
+        this.time = recipe.time();
+        this.experience = recipe.xp();
     }
 
     public static void register(DisplayRegistry registry) {

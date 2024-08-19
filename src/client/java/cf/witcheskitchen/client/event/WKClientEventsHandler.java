@@ -1,7 +1,7 @@
 package cf.witcheskitchen.client.event;
 
 import cf.witcheskitchen.WitchesKitchen;
-import cf.witcheskitchen.common.component.WKComponents;
+import cf.witcheskitchen.common.component.WKEntityComponents;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +19,7 @@ public class WKClientEventsHandler {
             final MinecraftClient client = MinecraftClient.getInstance();
             ClientPlayerEntity player = client.player;
             if (player == null) return;
-            WKComponents.PLAYER_COMPONENT.maybeGet(player).ifPresent(component -> {
+            WKEntityComponents.PLAYER_COMPONENT.maybeGet(player).ifPresent(component -> {
                 if (!component.isWitch()) return;
 
                 int height = client.getWindow().getScaledHeight();

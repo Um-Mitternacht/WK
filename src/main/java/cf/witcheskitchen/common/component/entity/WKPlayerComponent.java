@@ -1,7 +1,7 @@
 package cf.witcheskitchen.common.component.entity;
 
 import cf.witcheskitchen.WitchesKitchen;
-import cf.witcheskitchen.common.component.WKComponents;
+import cf.witcheskitchen.common.component.WKEntityComponents;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -15,7 +15,6 @@ import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class WKPlayerComponent implements AutoSyncedComponent, ServerTickingComponent {
     private static final EntityAttributeModifier SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH, ARMOR_LOW, ARMOR_MEDIUM, ARMOR_HIGH, ARMOR_TOUGHNESS_LOW, ARMOR_TOUGHNESS_MEDIUM, ARMOR_TOUGHNESS_HIGH, ATTACK_LOW, ATTACK_MEDIUM, ATTACK_HIGH;
@@ -70,12 +69,12 @@ public class WKPlayerComponent implements AutoSyncedComponent, ServerTickingComp
 
     public void isWitch(boolean isWitch) {
         this.isWitch = isWitch;
-        WKComponents.PLAYER_COMPONENT.sync(this);
+        WKEntityComponents.PLAYER_COMPONENT.sync(this);
     }
 
     public void modifyMagicCap(int amount) {
         magicCap = magicCap + amount;
-        WKComponents.PLAYER_COMPONENT.sync(this);
+        WKEntityComponents.PLAYER_COMPONENT.sync(this);
     }
 
     public void modifyMagic(int amount) {
@@ -84,7 +83,7 @@ public class WKPlayerComponent implements AutoSyncedComponent, ServerTickingComp
         } else {
             magic = Math.max(magic + amount, 0);
         }
-        WKComponents.PLAYER_COMPONENT.sync(this);
+        WKEntityComponents.PLAYER_COMPONENT.sync(this);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class WKPlayerComponent implements AutoSyncedComponent, ServerTickingComp
         if (canRegenMagic() && serverWorld.getTime() % 20 == 0) {
             if (magic < magicCap) {
                 magic++;
-                WKComponents.PLAYER_COMPONENT.sync(this);
+                WKEntityComponents.PLAYER_COMPONENT.sync(this);
             }
         }
     }

@@ -297,7 +297,7 @@ public class WitchesOvenBlockEntity extends WKBlockEntityWithInventory implement
         if (recipe instanceof SmeltingRecipe) {
             return ((SmeltingRecipe) recipe).getCookTime();
         } else if (recipe instanceof OvenCookingRecipe) {
-            return ((OvenCookingRecipe) recipe).getTime();
+            return ((OvenCookingRecipe) recipe).time();
         } else {
             return DEFAULT_COOKING_TIME;
         }
@@ -356,7 +356,7 @@ public class WitchesOvenBlockEntity extends WKBlockEntityWithInventory implement
             return smelting.getExperience();
         } else {
             if (recipe instanceof OvenCookingRecipe cooking) {
-                return cooking.getXp();
+                return cooking.xp();
             }
         }
         return 0.0F;
@@ -388,7 +388,7 @@ public class WitchesOvenBlockEntity extends WKBlockEntityWithInventory implement
         if (recipe instanceof SmeltingRecipe) {
             return DefaultedList.ofSize(1, recipe.getOutput());
         } else if (recipe instanceof OvenCookingRecipe ovenRecipe) {
-            return ovenRecipe.getOutputs();
+            return ovenRecipe.outputs();
         } else {
             WitchesKitchen.LOGGER.error("Unknown recipe type was passed in for Witches' Oven");
             return DefaultedList.of();

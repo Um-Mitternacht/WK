@@ -1,39 +1,41 @@
 package cf.witcheskitchen.common.recipe;
 
 import cf.witcheskitchen.common.registry.WKRecipeTypes;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.*;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.recipe.api.serializer.QuiltRecipeSerializer;
 
-public class TeaRecipe implements Recipe<Inventory> {
-    public final Identifier id;
+public class TeaRecipe implements Recipe<SingleStackRecipeInput> {
     public final Ingredient input;
     public final ItemStack output;
     public final StatusEffect effect;
 
-    public TeaRecipe(Identifier id, Ingredient input, ItemStack output, StatusEffect effect) {
-        this.id = id;
+    public TeaRecipe(Ingredient input, ItemStack output, StatusEffect effect) {
         this.input = input;
         this.effect = effect;
         this.output = output;
     }
 
     @Override
-    public boolean matches(Inventory inventory, World world) {
+    public boolean matches(SingleStackRecipeInput inventory, World world) {
         return false;
     }
 
     @Override
-    public ItemStack craft(Inventory inventory) {
+    public ItemStack craft(SingleStackRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
         return ItemStack.EMPTY;
     }
 
@@ -47,17 +49,16 @@ public class TeaRecipe implements Recipe<Inventory> {
     }
 
     @Override
+    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
+        return ItemStack.EMPTY;
+    }
+
     public ItemStack getOutput() {
         return output;
     }
 
     public StatusEffect getEffect() {
         return effect;
-    }
-
-    @Override
-    public Identifier getId() {
-        return id;
     }
 
     @Override
@@ -70,39 +71,33 @@ public class TeaRecipe implements Recipe<Inventory> {
         return WKRecipeTypes.TEA_RECIPE_TYPE;
     }
 
-    public static class Serializer implements QuiltRecipeSerializer<TeaRecipe> {
-
+    public static class Serializer implements RecipeSerializer<TeaRecipe> {
         @Override
-        public TeaRecipe read(Identifier id, JsonObject json) {
-            Ingredient input = Ingredient.fromJson(JsonHelper.getObject(json, "ingredient"));
-            StatusEffect effect = Registries.STATUS_EFFECT.get(new Identifier(JsonHelper.getString(json, "effect")));
-            ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "result"));
-            return new TeaRecipe(id, input, output, effect);
+        public MapCodec<TeaRecipe> codec() {
+            return RecordCodecBuilder.mapCodec(instance ->
+                instance.group(
+                    Ingredient.DISALLOW_EMPTY_CODEC
+                        .fieldOf("ingredient")
+                        .forGetter(TeaRecipe::getInput),
+                    ItemStack.CODEC
+                        .fieldOf("result")
+                        .forGetter(TeaRecipe::getOutput),
+                    Registries.STATUS_EFFECT.getCodec()
+                        .fieldOf("effect")
+                        .forGetter(TeaRecipe::getEffect)
+                )
+                    .apply(instance, TeaRecipe::new)
+            );
         }
 
         @Override
-        public TeaRecipe read(Identifier id, PacketByteBuf buf) {
-            Ingredient input = Ingredient.fromPacket(buf);
-            StatusEffect effect = Registries.STATUS_EFFECT.get(new Identifier(buf.readString()));
-            ItemStack output = buf.readItemStack();
-            return new TeaRecipe(id, input, output, effect);
-        }
-
-        @Override
-        public void write(PacketByteBuf buf, TeaRecipe recipe) {
-            recipe.getInput().write(buf);
-            buf.writeItemStack(recipe.getOutput());
-            buf.writeString(Registries.STATUS_EFFECT.getId(recipe.getEffect()).toString());
-        }
-
-        @Override
-        public JsonObject toJson(TeaRecipe recipe) {
-            JsonObject obj = new JsonObject();
-            obj.add("type", new JsonPrimitive(recipe.getId().toString()));
-            obj.add("ingredient", recipe.getInput().toJson());
-            obj.add("result", new JsonPrimitive(recipe.getOutput().toString()));
-            obj.add("effect", new JsonPrimitive(recipe.getEffect().toString()));
-            return obj;
+        public PacketCodec<RegistryByteBuf, TeaRecipe> packetCodec() {
+            return PacketCodec.tuple(
+                Ingredient.PACKET_CODEC, TeaRecipe::getInput,
+                ItemStack.PACKET_CODEC, TeaRecipe::getOutput,
+                PacketCodecs.registryValue(RegistryKeys.STATUS_EFFECT), TeaRecipe::getEffect,
+                TeaRecipe::new
+            );
         }
     }
 }

@@ -1,45 +1,34 @@
 package cf.witcheskitchen.common.recipe;
 
-import cf.witcheskitchen.api.util.RecipeUtils;
 import cf.witcheskitchen.common.registry.WKRecipeTypes;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import net.minecraft.inventory.Inventory;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.recipe.input.SingleStackRecipeInput;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.recipe.api.serializer.QuiltRecipeSerializer;
 
-public class OvenCookingRecipe implements Recipe<Inventory> {
+import java.util.List;
 
-    private final Identifier id;
-    private final Ingredient input;
-    private final DefaultedList<ItemStack> outputs;
-    private final int time;
-    private final float xp;
+public record OvenCookingRecipe(Ingredient input, List<ItemStack> outputs, int time,
+                                float xp) implements Recipe<SingleStackRecipeInput> {
 
-    public OvenCookingRecipe(Identifier id, Ingredient input, DefaultedList<ItemStack> outputs, int time, float xp) {
-        this.id = id;
-        this.input = input;
-        this.outputs = outputs;
-        this.time = time;
-        this.xp = xp;
+    @Override
+    public boolean matches(SingleStackRecipeInput inventory, World world) {
+        return input.test(inventory.getStackInSlot(0));
     }
 
     @Override
-    public boolean matches(Inventory inventory, World world) {
-        return input.test(inventory.getStack(0));
-    }
-
-    @Override
-    public ItemStack craft(Inventory inventory) {
+    public ItemStack craft(SingleStackRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
         return ItemStack.EMPTY;
     }
 
@@ -49,29 +38,8 @@ public class OvenCookingRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public ItemStack getOutput() {
+    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public Identifier getId() {
-        return this.id;
-    }
-
-    public Ingredient getInput() {
-        return input;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public DefaultedList<ItemStack> getOutputs() {
-        return outputs;
-    }
-
-    public float getXp() {
-        return xp;
     }
 
     @Override
@@ -84,49 +52,48 @@ public class OvenCookingRecipe implements Recipe<Inventory> {
         return WKRecipeTypes.WITCHES_OVEN_COOKING_RECIPE_TYPE;
     }
 
-    public static class Serializer implements QuiltRecipeSerializer<OvenCookingRecipe> {
-
+    public static class Serializer implements RecipeSerializer<OvenCookingRecipe> {
         @Override
-        public OvenCookingRecipe read(Identifier id, JsonObject json) {
-            final Ingredient input = Ingredient.fromJson(JsonHelper.getObject(json, "ingredient"));
-            var array = JsonHelper.getArray(json, "results");
-            final DefaultedList<ItemStack> outputs = RecipeUtils.deserializeStacks(array);
-            if (outputs.isEmpty()) {
-                throw new JsonParseException("No output for Witches' Oven recipe");
-            } else if (outputs.size() > 2) {
-                throw new JsonParseException("Too many outputs for Witches' Oven recipe");
-            }
-            final int time = JsonHelper.getInt(json, "time");
-            final float xp = JsonHelper.getFloat(json, "experience");
-            return new OvenCookingRecipe(id, input, outputs, time, xp);
+        public MapCodec<OvenCookingRecipe> codec() {
+            return RecordCodecBuilder
+                .mapCodec(instance ->
+                    instance.group(
+                            Ingredient.DISALLOW_EMPTY_CODEC
+                                .fieldOf("ingredient")
+                                .forGetter(OvenCookingRecipe::input),
+                            ItemStack.CODEC
+                                .listOf()
+                                .fieldOf("results")
+                                .validate(outputs -> {
+                                    if (outputs.isEmpty()) {
+                                        return DataResult.error(() -> "No output for Witches' Oven recipe");
+                                    } else if (outputs.size() > 2) {
+                                        return DataResult.error(() -> "Too many outputs for Witches' Oven recipe");
+                                    }
+
+                                    return DataResult.success(outputs);
+                                })
+                                .forGetter(OvenCookingRecipe::outputs),
+                            Codec.INT
+                                .fieldOf("time")
+                                .forGetter(OvenCookingRecipe::time),
+                            Codec.FLOAT
+                                .fieldOf("experience")
+                                .forGetter(OvenCookingRecipe::xp)
+                        )
+                        .apply(instance, OvenCookingRecipe::new)
+                );
         }
 
         @Override
-        public OvenCookingRecipe read(Identifier id, PacketByteBuf buf) {
-            final Ingredient input = Ingredient.fromPacket(buf);
-            final DefaultedList<ItemStack> outputs = DefaultedList.ofSize(buf.readVarInt(), ItemStack.EMPTY);
-            for (int i = 0; i < outputs.size(); i++) {
-                outputs.set(i, buf.readItemStack());
-            }
-            final int time = buf.readInt();
-            final float xp = buf.readFloat();
-            return new OvenCookingRecipe(id, input, outputs, time, xp);
-        }
-
-        @Override
-        public void write(PacketByteBuf buf, OvenCookingRecipe recipe) {
-            recipe.getInput().write(buf);
-            buf.writeVarInt(recipe.outputs.size());
-            for (var stack : recipe.outputs) {
-                buf.writeItemStack(stack);
-            }
-            buf.writeInt(recipe.getTime());
-            buf.writeFloat(recipe.getXp());
-        }
-
-        @Override
-        public JsonObject toJson(OvenCookingRecipe recipe) {
-            return null;
+        public PacketCodec<RegistryByteBuf, OvenCookingRecipe> packetCodec() {
+            return PacketCodec.tuple(
+                Ingredient.PACKET_CODEC, OvenCookingRecipe::input,
+                ItemStack.LIST_PACKET_CODEC, OvenCookingRecipe::outputs,
+                PacketCodecs.VAR_INT, OvenCookingRecipe::time,
+                PacketCodecs.FLOAT, OvenCookingRecipe::xp,
+                OvenCookingRecipe::new
+            );
         }
     }
 }

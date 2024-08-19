@@ -1,24 +1,42 @@
 package cf.witcheskitchen.common.component;
 
 import cf.witcheskitchen.WitchesKitchen;
-import cf.witcheskitchen.common.component.entity.WKCurseComponent;
-import cf.witcheskitchen.common.component.entity.WKPlayerComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import org.ladysnake.cca.api.v3.component.ComponentKey;
-import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentFactoryRegistry;
-import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
-import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
+import cf.witcheskitchen.api.fluid.FluidStack;
+import cf.witcheskitchen.common.component.blockentity.WitchesCauldronData;
+import cf.witcheskitchen.common.component.item.TaglockEntityData;
+import net.minecraft.component.ComponentType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.math.BlockPos;
 
-public class WKComponents implements EntityComponentInitializer {
-    public static final ComponentKey<WKPlayerComponent> PLAYER_COMPONENT = ComponentRegistry.getOrCreate(WitchesKitchen.id("player"), WKPlayerComponent.class);
-    public static final ComponentKey<WKCurseComponent> CURSE_COMPONENT = ComponentRegistry.getOrCreate(WitchesKitchen.id("curse"), WKCurseComponent.class);
+public class WKComponents {
+    public static final ComponentType<BlockPos> BLOCK_POS = register("block_pos", ComponentType.<BlockPos>builder()
+        .codec(BlockPos.CODEC)
+        .packetCodec(BlockPos.PACKET_CODEC)
+        .build()
+    );
 
+    public static final ComponentType<TaglockEntityData> TAGLOCK = register("taglock", ComponentType.<TaglockEntityData>builder()
+        .codec(TaglockEntityData.CODEC)
+        .packetCodec(TaglockEntityData.PACKET_CODEC)
+        .build()
+    );
 
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.beginRegistration(PlayerEntity.class, PLAYER_COMPONENT).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).end(WKPlayerComponent::new);
-        registry.beginRegistration(PlayerEntity.class, CURSE_COMPONENT).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).end(WKCurseComponent::new);
+    public static final ComponentType<WitchesCauldronData> WITCHES_CAULDRON = register("witches_cauldron", ComponentType.<WitchesCauldronData>builder()
+        .codec(WitchesCauldronData.CODEC)
+        .packetCodec(WitchesCauldronData.PACKET_CODEC)
+        .build()
+    );
 
+    public static final ComponentType<FluidStack> FLUID_STACK = register("fluid_stack", ComponentType.<FluidStack>builder()
+        .codec(FluidStack.CODEC)
+        .packetCodec(FluidStack.PACKET_CODEC)
+        .build()
+    );
+
+    private static <T> ComponentType<T> register(String name, ComponentType<T> component) {
+        return Registry.register(Registries.DATA_COMPONENT_TYPE, WitchesKitchen.id(name), component);
     }
+
+    public static void init() {}
 }

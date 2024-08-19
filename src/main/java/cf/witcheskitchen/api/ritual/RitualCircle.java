@@ -1,11 +1,34 @@
 package cf.witcheskitchen.api.ritual;
 
+import cf.witcheskitchen.api.event.network.CustomPacketCodecs;
+import cf.witcheskitchen.api.util.CodecUtils;
 import cf.witcheskitchen.common.registry.WKBlocks;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 
 public class RitualCircle {
+    public static final Codec<RitualCircle> CODEC = RecordCodecBuilder.create(instance ->
+        instance.group(
+            CodecUtils.createEnumCodec(Size::valueOf)
+                .fieldOf("size")
+                .forGetter(RitualCircle::getSize),
+            CodecUtils.createEnumCodec(Type::valueOf)
+                .fieldOf("type")
+                .forGetter(RitualCircle::getType)
+        )
+            .apply(instance, RitualCircle::new)
+    );
+
+    public static final PacketCodec<PacketByteBuf, RitualCircle> PACKET_CODEC = PacketCodec.tuple(
+        CustomPacketCodecs.createEnumCodec(Size::valueOf), RitualCircle::getSize,
+        CustomPacketCodecs.createEnumCodec(Type::valueOf), RitualCircle::getType,
+        RitualCircle::new
+    );
+
     public static final byte[][] small = {{0, 1, 1, 1, 0}, {1, 0, 0, 0, 1}, {1, 0, 0, 0, 1}, {1, 0, 0, 0, 1}, {0, 1, 1, 1, 0},};
     public static final byte[][] medium = {{0, 0, 1, 1, 1, 1, 1, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 1, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 1}, {0, 1, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 1, 1, 1, 1, 1, 0, 0}};
     public static final byte[][] large = {{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0}};
@@ -17,22 +40,12 @@ public class RitualCircle {
         this.type = type;
     }
 
-    @Nullable
-    public static Size getSize(String string) {
-        return Size.valueOf(string);
+    public Size getSize() {
+        return size;
     }
 
-    @Nullable
-    public static Type getType(String string) {
-        return Type.valueOf(string);
-    }
-
-    public String getSize() {
-        return size.name();
-    }
-
-    public String getType() {
-        return type.name();
+    public Type getType() {
+        return type;
     }
 
     public enum Size {

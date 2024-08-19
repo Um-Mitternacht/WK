@@ -20,7 +20,7 @@ public class TeleportRitual extends Ritual {
                 livingEntity.squaredDistanceTo(blockPos.getX(), blockPos.getY(), blockPos.getZ()) < strength);
 
         for (Entity entity : list) {
-            entity.teleport(location.getX(), location.getY(), location.getZ());
+            entity.requestTeleport(location.getX(), location.getY(), location.getZ());
         }
     }
 }

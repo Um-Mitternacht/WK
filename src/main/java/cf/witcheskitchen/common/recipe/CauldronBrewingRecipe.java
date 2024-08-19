@@ -1,31 +1,32 @@
 package cf.witcheskitchen.common.recipe;
 
+import cf.witcheskitchen.api.event.network.CustomPacketCodecs;
 import cf.witcheskitchen.api.util.RecipeUtils;
 import cf.witcheskitchen.common.registry.WKRecipeTypes;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import net.minecraft.inventory.Inventory;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.world.World;
-import org.quiltmc.qsl.recipe.api.serializer.QuiltRecipeSerializer;
 
-public class CauldronBrewingRecipe implements Recipe<Inventory> {
+import java.util.List;
 
-    private final Identifier id;
-    private final DefaultedList<Ingredient> ingredients;
+public class CauldronBrewingRecipe implements Recipe<MultipleStackRecipeInput> {
+
+    private final List<Ingredient> ingredients;
     private final ItemStack result;
     private final int color;
 
-    public CauldronBrewingRecipe(Identifier id, DefaultedList<Ingredient> ingredients, ItemStack result, int color) {
-        this.id = id;
+    public CauldronBrewingRecipe(List<Ingredient> ingredients, ItemStack result, int color) {
         this.ingredients = ingredients;
         this.result = result;
         this.color = color;
@@ -37,12 +38,12 @@ public class CauldronBrewingRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean matches(Inventory inventory, World world) {
-        return RecipeUtils.matches(inventory, this.ingredients, 0, inventory.size());
+    public boolean matches(MultipleStackRecipeInput inventory, World world) {
+        return RecipeUtils.matches(inventory, this.ingredients, 0, inventory.getSize());
     }
 
     @Override
-    public ItemStack craft(Inventory inventory) {
+    public ItemStack craft(MultipleStackRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
         return this.result.copy();
     }
 
@@ -51,19 +52,17 @@ public class CauldronBrewingRecipe implements Recipe<Inventory> {
         return false;
     }
 
-    @Override
-    public ItemStack getOutput() {
+    public ItemStack getResult() {
         return this.result;
     }
 
     @Override
-    public Identifier getId() {
-        return this.id;
+    public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
+        return this.result;
     }
 
-    @Override
-    public DefaultedList<Ingredient> getIngredients() {
-        return ingredients;
+    public List<Ingredient> getInputs() {
+        return this.ingredients;
     }
 
     @Override
@@ -81,40 +80,42 @@ public class CauldronBrewingRecipe implements Recipe<Inventory> {
     }
 
 
-    public static class Serializer implements QuiltRecipeSerializer<CauldronBrewingRecipe> {
-
+    public static class Serializer implements RecipeSerializer<CauldronBrewingRecipe> {
         @Override
-        public CauldronBrewingRecipe read(Identifier id, JsonObject json) {
-            final DefaultedList<Ingredient> ingredients = RecipeUtils.deserializeIngredients(JsonHelper.getArray(json, "ingredients"));
-            if (ingredients.size() < 2) {
-                throw new JsonParseException("Cauldron recipes must have at least 2 ingredients");
-            } else if (ingredients.size() > 7) {
-                throw new JsonParseException("Too many ingredients for Cauldron recipe");
-            } else {
-                return new CauldronBrewingRecipe(id, ingredients, RecipeUtils.deserializeStack(JsonHelper.getObject(json, "result")), JsonHelper.getInt(json, "color"));
-            }
+        public MapCodec<CauldronBrewingRecipe> codec() {
+            return RecordCodecBuilder.mapCodec(instance ->
+                instance.group(
+                    Ingredient.DISALLOW_EMPTY_CODEC.listOf()
+                        .fieldOf("ingredients")
+                        .validate(ingredients -> {
+                            if (ingredients.size() < 2) {
+                                return DataResult.error(() -> "Cauldron recipes must have at least 2 ingredients");
+                            } else if (ingredients.size() > 7) {
+                                return DataResult.error(() -> "Too many ingredients for Cauldron recipe");
+                            }
+
+                            return DataResult.success(ingredients);
+                        })
+                        .forGetter(CauldronBrewingRecipe::getInputs),
+                    ItemStack.CODEC
+                        .fieldOf("result")
+                        .forGetter(CauldronBrewingRecipe::getResult),
+                    Codec.INT
+                        .fieldOf("color")
+                        .forGetter(CauldronBrewingRecipe::getColor)
+                )
+                    .apply(instance, CauldronBrewingRecipe::new)
+            );
         }
 
         @Override
-        public CauldronBrewingRecipe read(Identifier id, PacketByteBuf buf) {
-            final DefaultedList<Ingredient> ingredients = DefaultedList.ofSize(buf.readVarInt(), Ingredient.EMPTY);
-            ingredients.replaceAll(ignored -> Ingredient.fromPacket(buf));
-            return new CauldronBrewingRecipe(id, ingredients, buf.readItemStack(), buf.readInt());
-        }
-
-        @Override
-        public void write(PacketByteBuf buf, CauldronBrewingRecipe recipe) {
-            buf.writeVarInt(recipe.getIngredients().size());
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                ingredient.write(buf);
-            }
-            buf.writeItemStack(recipe.getOutput());
-            buf.writeInt(recipe.color);
-        }
-
-        @Override
-        public JsonObject toJson(CauldronBrewingRecipe recipe) {
-            return null;
+        public PacketCodec<RegistryByteBuf, CauldronBrewingRecipe> packetCodec() {
+            return PacketCodec.tuple(
+                CustomPacketCodecs.INGREDIENT_LIST, CauldronBrewingRecipe::getInputs,
+                ItemStack.PACKET_CODEC, CauldronBrewingRecipe::getResult,
+                PacketCodecs.VAR_INT, CauldronBrewingRecipe::getColor,
+                CauldronBrewingRecipe::new
+            );
         }
     }
 }

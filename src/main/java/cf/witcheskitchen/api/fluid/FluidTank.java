@@ -1,6 +1,11 @@
 package cf.witcheskitchen.api.fluid;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +22,30 @@ import java.util.function.Predicate;
  * {@link net.minecraft.item.ItemStack} <p>
  */
 public class FluidTank implements IFluidStorage {
+    // TODO: is this what we want?
+    public static final Codec<FluidTank> CODEC = RecordCodecBuilder.create(instance ->
+        instance.group(
+            Codec.INT
+                .fieldOf("capacity")
+                .forGetter(FluidTank::getCapacity),
+            FluidStack.CODEC
+                .fieldOf("stack")
+                .forGetter(FluidTank::getStack)
+        )
+            .apply(instance, FluidTank::fromCodec)
+    );
+
+    public static final PacketCodec<RegistryByteBuf, FluidTank> PACKET_CODEC = PacketCodec.tuple(
+        PacketCodecs.VAR_INT, FluidTank::getCapacity,
+        FluidStack.PACKET_CODEC, FluidTank::getStack,
+        FluidTank::fromCodec
+    );
+
+    public static FluidTank fromCodec(int capacity, FluidStack stack) {
+        var tank = new FluidTank(capacity);
+        tank.stack = stack;
+        return tank;
+    }
 
     /**
      * The <b>Max</b> capacity of fluid this instance of Tank can hold (in MilliBuckets).
@@ -137,7 +166,6 @@ public class FluidTank implements IFluidStorage {
         }
     }
 
-    // TODO: refactor to use data components
     /**
      * Reads the content of this tank.
      * Must be read from {@link net.minecraft.block.entity.BlockEntity#readNbt(NbtCompound)}

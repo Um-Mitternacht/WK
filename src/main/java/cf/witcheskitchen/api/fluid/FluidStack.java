@@ -1,11 +1,17 @@
 package cf.witcheskitchen.api.fluid;
 
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKeys;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,25 +47,33 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  */
 public final class FluidStack implements Comparable<FluidStack> {
+    public static final Codec<FluidStack> CODEC = RecordCodecBuilder.create(instance ->
+        instance.group(
+            Registries.FLUID.getCodec()
+                .fieldOf("fluid")
+                .forGetter(FluidStack::getFluid),
+            Codec.INT
+                .fieldOf("amount")
+                .forGetter(FluidStack::getAmount),
+            NbtCompound.CODEC
+                .optionalFieldOf("data", null)
+                .forGetter(FluidStack::getNbt)
+        )
+            .apply(instance, FluidStack::new)
+    );
+
+    public static final PacketCodec<RegistryByteBuf, FluidStack> PACKET_CODEC = PacketCodec.tuple(
+        PacketCodecs.registryValue(RegistryKeys.FLUID), FluidStack::getFluid,
+        PacketCodecs.VAR_INT, FluidStack::getAmount,
+        PacketCodecs.NBT_COMPOUND, FluidStack::getNbt,
+        FluidStack::new
+    );
+
     /**
      * Empty FluidStack instance (similar to a {@link net.minecraft.item.ItemStack#EMPTY)}
      */
     public static final FluidStack EMPTY = new FluidStack(Fluids.EMPTY, 0);
 
-    // ---------- NBT DATA KEYS --------- //
-
-    /**
-     * The key of the amount of fluid in a fluid stack's custom NBT, whose value is {@value}.
-     */
-    private static final String AMOUNT_KEY = "Amount";
-    /**
-     * The key of the internal fluid NBT in a fluid stack's custom NBT, whose value is {@value}.
-     */
-    private static final String FLUID_KEY = "Fluid";
-    /**
-     * The key of the fluid stack's internal-sub nbt, whose value is {@value}.
-     */
-    private static final String INTERNAL_NBT_DATA = "Data";
     /**
      * Internal Fluid type of the stack
      */
@@ -110,13 +124,7 @@ public final class FluidStack implements Comparable<FluidStack> {
         if (nbt == null) {
             return FluidStack.EMPTY;
         }
-        final Fluid fluid = Registries.FLUID.get(Identifier.of(nbt.getString(FLUID_KEY)));
-        final int amount = nbt.getInt("Amount");
-        final FluidStack stack = new FluidStack(fluid, amount);
-        if (nbt.contains(INTERNAL_NBT_DATA)) {
-            stack.data = nbt.getCompound("Tag");
-        }
-        return stack;
+        return CODEC.parse(NbtOps.INSTANCE, nbt).getOrThrow();
     }
 
     /**
@@ -127,11 +135,7 @@ public final class FluidStack implements Comparable<FluidStack> {
      * @see <a href="#nbt-operations">Fluid Stack NBT Operations</a>
      */
     public NbtCompound writeToNbt(NbtCompound nbt) {
-        nbt.putString(FLUID_KEY, Registries.FLUID.getId(this.fluid).toString());
-        nbt.putInt(AMOUNT_KEY, this.amount);
-        if (this.data != null && !this.data.isEmpty()) {
-            nbt.put(INTERNAL_NBT_DATA, this.data);
-        }
+        CODEC.encode(this, NbtOps.INSTANCE, nbt);
         return nbt;
     }
 

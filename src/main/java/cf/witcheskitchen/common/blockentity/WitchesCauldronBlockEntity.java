@@ -9,28 +9,33 @@ import cf.witcheskitchen.api.fluid.WKFluidAPI;
 import cf.witcheskitchen.api.util.InventoryHelper;
 import cf.witcheskitchen.api.util.PacketHelper;
 import cf.witcheskitchen.api.util.TimeHelper;
-import cf.witcheskitchen.client.network.packet.ParticlePacketHandler;
-import cf.witcheskitchen.client.network.packet.SplashParticlePacketHandler;
 import cf.witcheskitchen.common.block.WitchesCauldronBlock;
+import cf.witcheskitchen.common.component.WKComponents;
+import cf.witcheskitchen.common.component.blockentity.WitchesCauldronData;
+import cf.witcheskitchen.common.network.packet.ParticlePacket;
+import cf.witcheskitchen.common.network.packet.SplashParticlePacket;
 import cf.witcheskitchen.common.recipe.CauldronBrewingRecipe;
 import cf.witcheskitchen.common.registry.WKBlockEntityTypes;
 import cf.witcheskitchen.common.registry.WKTags;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ColorUtil;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory implements IStorageHandler {
 
@@ -96,7 +101,7 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
 
         if (world.getBlockState(pos).get(WitchesCauldronBlock.LIT)) {
             this.manager.clear();
-            PacketHelper.sendToAllTracking(entity, serverPlayer -> ParticlePacketHandler.send(serverPlayer, this.getPos(), Registries.PARTICLE_TYPE.getId(ParticleTypes.LAVA), Registries.SOUND_EVENT.getId(SoundEvents.BLOCK_LAVA_EXTINGUISH), (byte) 3));
+            PacketHelper.sendToAllTracking(entity, serverPlayer -> ParticlePacket.send(serverPlayer, this.getPos(), Registries.PARTICLE_TYPE.getId(ParticleTypes.LAVA), Registries.SOUND_EVENT.getId(SoundEvents.BLOCK_LAVA_EXTINGUISH), (byte) 3));
             entity.kill();
         }
     }
@@ -134,7 +139,7 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
     }
 
     @Override
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public void onClientTick(World world, BlockPos pos, BlockState state, WKBlockEntity wkBlockEntity) {
         if (state.get(WitchesCauldronBlock.LIT)) {
             WitchesCauldronBlockEntity.lavaTick(world, pos, true);
@@ -142,10 +147,10 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
     }
 
     private void sendPlashPacket(ItemEntity trackedEntity) {
-        final float red = ColorUtil.ARGB32.getRed(this.color) / 255F;
-        final float green = ColorUtil.ARGB32.getGreen(this.color) / 255f;
-        final float blue = ColorUtil.ARGB32.getBlue(this.color) / 255F;
-        PacketHelper.sendToAllTracking(trackedEntity, serverPlayer -> SplashParticlePacketHandler.send(serverPlayer, this.getPos(), red, green, blue, 0.5D, 1.0D, 0.5D, (byte) 6));
+        final float red = ColorHelper.Argb.getRed(this.color) / 255F;
+        final float green = ColorHelper.Argb.getGreen(this.color) / 255f;
+        final float blue = ColorHelper.Argb.getBlue(this.color) / 255F;
+        PacketHelper.sendToAllTracking(trackedEntity, serverPlayer -> SplashParticlePacket.send(serverPlayer, this.getPos(), red, green, blue, 0.5D, 1.0D, 0.5D, (byte) 6));
         world.playSound(null, pos, SoundEvents.ENTITY_PLAYER_SPLASH, SoundCategory.BLOCKS, 0.2F, 1.0f);
     }
 
@@ -179,8 +184,8 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(nbt, registryLookup);
         this.tank.readStorage(nbt.getCompound("Tank"));
         this.ticksHeated = nbt.getInt("TicksHeated");
         this.color = nbt.getInt("Color");
@@ -188,12 +193,36 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        super.writeNbt(nbt, registryLookup);
         nbt.put("Tank", tank.writeStorage());
         nbt.putInt("TicksHeated", this.ticksHeated);
         nbt.putInt("Color", this.color);
         nbt.putBoolean("Powered", this.powered);
+    }
+
+    @Override
+    protected void readComponents(ComponentsAccess components) {
+        super.readComponents(components);
+
+        var cauldronData = components.get(WKComponents.WITCHES_CAULDRON);
+        if (cauldronData != null) {
+            this.tank.readStorage(cauldronData.tankData());
+            this.ticksHeated = cauldronData.ticksHeated();
+            this.color = cauldronData.color();
+            this.powered = cauldronData.powered();
+        }
+    }
+
+    @Override
+    protected void addComponents(ComponentMap.Builder componentMapBuilder) {
+        super.addComponents(componentMapBuilder);
+        componentMapBuilder.add(WKComponents.WITCHES_CAULDRON, new WitchesCauldronData(
+            tank.writeStorage(),
+            this.ticksHeated,
+            this.color,
+            this.powered
+        ));
     }
 
     @Override
@@ -224,13 +253,6 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
         return this.tank.drain(maxAmount, side);
     }
 
-    @Override
-    public NbtCompound toSyncedNbt() {
-        final NbtCompound data = super.toSyncedNbt();
-        writeNbt(data);
-        return data;
-    }
-
     private void boilWater(int time) {
         switch (time) {
             case 0 -> this.color = DEFAULT_WATER_COLOR;
@@ -253,22 +275,19 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
         return !this.tank.isEmpty();
     }
 
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public double getPercentFilled() {
         return ((((double) tank.getFluidAmount() / this.tank.getCapacity())));
     }
 
-    @ClientOnly
     public int getColor() {
         return this.color;
     }
 
-    @ClientOnly
     public int getTicksHeated() {
         return ticksHeated;
     }
 
-    @ClientOnly
     public boolean isPowered() {
         return powered;
     }
