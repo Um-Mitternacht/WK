@@ -220,10 +220,10 @@ public class WitchesCauldronBlockEntity extends WKBlockEntityWithInventory imple
     protected void addComponents(ComponentMap.Builder componentMapBuilder) {
         super.addComponents(componentMapBuilder);
         componentMapBuilder.add(WKComponents.WITCHES_CAULDRON, new WitchesCauldronData(
-            tank.writeStorage(),
-            this.ticksHeated,
-            this.color,
-            this.powered
+                tank.writeStorage(),
+                this.ticksHeated,
+                this.color,
+                this.powered
         ));
     }
 

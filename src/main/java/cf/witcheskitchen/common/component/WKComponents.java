@@ -13,44 +13,45 @@ import net.minecraft.util.math.BlockPos;
 
 public class WKComponents {
     public static final ComponentType<BlockPos> BLOCK_POS = register("block_pos", ComponentType.<BlockPos>builder()
-        .codec(BlockPos.CODEC)
-        .packetCodec(BlockPos.PACKET_CODEC)
-        .build()
+            .codec(BlockPos.CODEC)
+            .packetCodec(BlockPos.PACKET_CODEC)
+            .build()
     );
 
     public static final ComponentType<TaglockEntityData> TAGLOCK = register("taglock", ComponentType.<TaglockEntityData>builder()
-        .codec(TaglockEntityData.CODEC)
-        .packetCodec(TaglockEntityData.PACKET_CODEC)
-        .build()
+            .codec(TaglockEntityData.CODEC)
+            .packetCodec(TaglockEntityData.PACKET_CODEC)
+            .build()
     );
 
     public static final ComponentType<WitchesCauldronData> WITCHES_CAULDRON = register("witches_cauldron", ComponentType.<WitchesCauldronData>builder()
-        .codec(WitchesCauldronData.CODEC)
-        .packetCodec(WitchesCauldronData.PACKET_CODEC)
-        .build()
+            .codec(WitchesCauldronData.CODEC)
+            .packetCodec(WitchesCauldronData.PACKET_CODEC)
+            .build()
     );
 
     public static final ComponentType<FluidStack> FLUID_STACK = register("fluid_stack", ComponentType.<FluidStack>builder()
-        .codec(FluidStack.CODEC)
-        .packetCodec(FluidStack.PACKET_CODEC)
-        .build()
+            .codec(FluidStack.CODEC)
+            .packetCodec(FluidStack.PACKET_CODEC)
+            .build()
     );
 
     public static final ComponentType<TeapotData> TEAPOT = register("teapot", ComponentType.<TeapotData>builder()
-        .codec(TeapotData.CODEC)
-        .packetCodec(TeapotData.PACKET_CODEC)
-        .build()
+            .codec(TeapotData.CODEC)
+            .packetCodec(TeapotData.PACKET_CODEC)
+            .build()
     );
 
     public static final ComponentType<SeedTypeData> SEED_TYPE = register("seed_type", ComponentType.<SeedTypeData>builder()
-        .codec(SeedTypeData.CODEC)
-        .packetCodec(SeedTypeData.PACKET_CODEC)
-        .build()
+            .codec(SeedTypeData.CODEC)
+            .packetCodec(SeedTypeData.PACKET_CODEC)
+            .build()
     );
 
     private static <T> ComponentType<T> register(String name, ComponentType<T> component) {
         return Registry.register(Registries.DATA_COMPONENT_TYPE, WitchesKitchen.id(name), component);
     }
 
-    public static void init() {}
+    public static void init() {
+    }
 }

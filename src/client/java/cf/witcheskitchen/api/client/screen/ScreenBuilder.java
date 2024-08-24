@@ -2,10 +2,8 @@ package cf.witcheskitchen.api.client.screen;
 
 
 import cf.witcheskitchen.WitchesKitchen;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -74,8 +72,8 @@ public final class ScreenBuilder {
      * Draws the default player inventory slots
      *
      * @param context DrawContext
-     * @param posX        originX
-     * @param posY        originY
+     * @param posX    originX
+     * @param posY    originY
      */
     public void drawPlayerSlots(final DrawContext context, int posX, int posY) {
         // fixed position in minecraft
@@ -96,8 +94,8 @@ public final class ScreenBuilder {
      * Draws a single slot at the given position
      *
      * @param context DrawContext
-     * @param posX        background posX
-     * @param posY        background posY
+     * @param posX    background posX
+     * @param posY    background posY
      */
     public void drawSlot(final DrawContext context, final int posX, final int posY) {
         context.drawGuiTexture(GUI_SLOT, posX, posY, 18, 18);
@@ -107,8 +105,8 @@ public final class ScreenBuilder {
      * Draws an output slot at the given position
      *
      * @param context DrawContext
-     * @param posX        background posX
-     * @param posY        background posY
+     * @param posX    background posX
+     * @param posY    background posY
      */
     public void drawOutputSlot(final DrawContext context, final int posX, final int posY) {
         context.drawGuiTexture(GUI_OUTPUT_SLOT, posX, posY, 26, 26);
@@ -117,7 +115,7 @@ public final class ScreenBuilder {
     /**
      * Draws the vanilla smelting progress (arrow) at the given position.
      *
-     * @param context DrawContext
+     * @param context     DrawContext
      * @param posX        gui posX
      * @param posY        gui posY
      * @param progress    current progress
@@ -133,7 +131,7 @@ public final class ScreenBuilder {
     /**
      * Draws the vanilla burning progress at the given position
      *
-     * @param context DrawContext
+     * @param context     DrawContext
      * @param posX        gui posX
      * @param posY        gui posY
      * @param burning     whether the device is burning
@@ -153,7 +151,7 @@ public final class ScreenBuilder {
     /**
      * Draws the vanilla brewing progress at the given position and a tooltip with the percentage completed.
      *
-     * @param context DrawContext
+     * @param context     DrawContext
      * @param posX        gui posX
      * @param posY        gui posY
      * @param mouseX      current mouseX position

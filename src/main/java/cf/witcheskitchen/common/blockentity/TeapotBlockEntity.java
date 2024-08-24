@@ -96,7 +96,7 @@ public class TeapotBlockEntity extends WKBlockEntityWithInventory {
                     fillKettle(player);
                 } else {
                     world.getRecipeManager().listAllOfType(WKRecipeTypes.TEA_RECIPE_TYPE).stream().filter(recipe -> recipe.value().input.test(stack)).findFirst().map(RecipeEntry::value)
-                        .ifPresent(teaRecipe -> tryAddIngredientToTeaPot(stack, world));
+                            .ifPresent(teaRecipe -> tryAddIngredientToTeaPot(stack, world));
                 }
             }
         }

@@ -24,29 +24,22 @@ import java.util.function.Predicate;
 public class FluidTank implements IFluidStorage {
     // TODO: is this what we want?
     public static final Codec<FluidTank> CODEC = RecordCodecBuilder.create(instance ->
-        instance.group(
-            Codec.INT
-                .fieldOf("capacity")
-                .forGetter(FluidTank::getCapacity),
-            FluidStack.CODEC
-                .fieldOf("stack")
-                .forGetter(FluidTank::getStack)
-        )
-            .apply(instance, FluidTank::fromCodec)
+            instance.group(
+                            Codec.INT
+                                    .fieldOf("capacity")
+                                    .forGetter(FluidTank::getCapacity),
+                            FluidStack.CODEC
+                                    .fieldOf("stack")
+                                    .forGetter(FluidTank::getStack)
+                    )
+                    .apply(instance, FluidTank::fromCodec)
     );
 
     public static final PacketCodec<RegistryByteBuf, FluidTank> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.VAR_INT, FluidTank::getCapacity,
-        FluidStack.PACKET_CODEC, FluidTank::getStack,
-        FluidTank::fromCodec
+            PacketCodecs.VAR_INT, FluidTank::getCapacity,
+            FluidStack.PACKET_CODEC, FluidTank::getStack,
+            FluidTank::fromCodec
     );
-
-    public static FluidTank fromCodec(int capacity, FluidStack stack) {
-        var tank = new FluidTank(capacity);
-        tank.stack = stack;
-        return tank;
-    }
-
     /**
      * The <b>Max</b> capacity of fluid this instance of Tank can hold (in MilliBuckets).
      * This value <b>CANNOT BE CHANGED</b> after the tank is created.
@@ -64,15 +57,21 @@ public class FluidTank implements IFluidStorage {
     @NotNull
     protected FluidStack stack = FluidStack.EMPTY;
 
-
     public FluidTank(int capacity) {
         this(capacity, filter -> true);
     }
+
 
     // Default Constructor
     public FluidTank(int capacity, Predicate<FluidStack> filterValidator) {
         this.capacity = capacity;
         this.filterValidator = filterValidator;
+    }
+
+    public static FluidTank fromCodec(int capacity, FluidStack stack) {
+        var tank = new FluidTank(capacity);
+        tank.stack = stack;
+        return tank;
     }
 
     /**

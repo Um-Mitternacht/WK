@@ -10,8 +10,8 @@
     "fluid.PotionItemMixin",
     "potion.PotionItemMixin",
     "statuseffect.ActiveTargetGoalMixin",
-    "statuseffect.CreeperEntityMixin",
     "statuseffect.ArthropodEntityMixin",
+    "statuseffect.CreeperEntityMixin",
     "statuseffect.FleeEntityGoalMixin"
   ],
   "client": [

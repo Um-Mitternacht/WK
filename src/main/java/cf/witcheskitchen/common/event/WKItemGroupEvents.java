@@ -23,15 +23,15 @@ public class WKItemGroupEvents {
 
     public static void init() {
         Registry.register(Registries.ITEM_GROUP, GENERAL_TAB, FabricItemGroup.builder()
-            .displayName(Text.translatable(GENERAL_TAB.getValue().toTranslationKey("itemGroup")))
-            .icon(() -> new ItemStack(WKBlocks.IRON_WITCHES_OVEN.asItem()))
-            .build()
+                .displayName(Text.translatable(GENERAL_TAB.getValue().toTranslationKey("itemGroup")))
+                .icon(() -> new ItemStack(WKBlocks.IRON_WITCHES_OVEN.asItem()))
+                .build()
         );
         Registry.register(Registries.ITEM_GROUP, FOOD_TAB, FabricItemGroup.builder()
-            .displayName(Text.translatable(FOOD_TAB.getValue().toTranslationKey("itemGroup")))
-            .icon(() -> new ItemStack(WKItems.ELDER_TEA)).build()
+                .displayName(Text.translatable(FOOD_TAB.getValue().toTranslationKey("itemGroup")))
+                .icon(() -> new ItemStack(WKItems.ELDER_TEA)).build()
         );
-        
+
         ItemGroupEvents.modifyEntriesEvent(GENERAL_TAB).register(WKItemGroupEvents::generalGroup);
         ItemGroupEvents.modifyEntriesEvent(FOOD_TAB).register(WKItemGroupEvents::foodGroup);
     }

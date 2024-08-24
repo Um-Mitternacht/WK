@@ -4,10 +4,8 @@ package cf.witcheskitchen.common.world.generator;
 //this will all need to be reworked to better suit our needs
 
 import cf.witcheskitchen.data.worldgen.WKFoliagePlacers;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.intprovider.IntProvider;
 import net.minecraft.util.math.random.Random;
@@ -15,8 +13,6 @@ import net.minecraft.world.TestableWorld;
 import net.minecraft.world.gen.feature.TreeFeatureConfig;
 import net.minecraft.world.gen.foliage.FoliagePlacer;
 import net.minecraft.world.gen.foliage.FoliagePlacerType;
-
-import java.util.function.BiConsumer;
 
 public class SumacFoliagePlacer extends FoliagePlacer {
 

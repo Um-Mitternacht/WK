@@ -8,21 +8,21 @@ import net.minecraft.network.codec.PacketCodecs;
 
 public class CommandType {
     public static Codec<CommandType> CODEC = RecordCodecBuilder.create(instance ->
-        instance.group(
-            Codec.STRING
-                .fieldOf("command")
-                .forGetter(CommandType::getCommand),
-            Codec.STRING
-                .fieldOf("type")
-                .forGetter(CommandType::getType)
-        )
-            .apply(instance, CommandType::new)
+            instance.group(
+                            Codec.STRING
+                                    .fieldOf("command")
+                                    .forGetter(CommandType::getCommand),
+                            Codec.STRING
+                                    .fieldOf("type")
+                                    .forGetter(CommandType::getType)
+                    )
+                    .apply(instance, CommandType::new)
     );
 
     public static PacketCodec<PacketByteBuf, CommandType> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.STRING, CommandType::getCommand,
-        PacketCodecs.STRING, CommandType::getType,
-        CommandType::new
+            PacketCodecs.STRING, CommandType::getCommand,
+            PacketCodecs.STRING, CommandType::getType,
+            CommandType::new
     );
 
     public String command;

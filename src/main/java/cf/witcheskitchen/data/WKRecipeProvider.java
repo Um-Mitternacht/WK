@@ -6,7 +6,6 @@ import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.registry.RegistryWrapper;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class WKRecipeProvider extends FabricRecipeProvider {
     public WKRecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {

@@ -70,41 +70,41 @@ public class BarrelFermentingRecipe implements Recipe<MultipleStackRecipeInput> 
         @Override
         public MapCodec<BarrelFermentingRecipe> codec() {
             return RecordCodecBuilder.mapCodec(instance ->
-                instance.group(
-                    Ingredient.DISALLOW_EMPTY_CODEC.listOf()
-                        .fieldOf("ingredients")
-                        .validate(inputs -> {
-                            if (inputs.isEmpty()) {
-                                return DataResult.error(() -> "No ingredients for fermenting recipe");
-                            } else if (inputs.size() > 6) {
-                                return DataResult.error(() -> "Too many ingredients for fermenting recipe");
-                            }
+                    instance.group(
+                                    Ingredient.DISALLOW_EMPTY_CODEC.listOf()
+                                            .fieldOf("ingredients")
+                                            .validate(inputs -> {
+                                                if (inputs.isEmpty()) {
+                                                    return DataResult.error(() -> "No ingredients for fermenting recipe");
+                                                } else if (inputs.size() > 6) {
+                                                    return DataResult.error(() -> "Too many ingredients for fermenting recipe");
+                                                }
 
-                            return DataResult.success(inputs);
-                        })
-                        .forGetter(BarrelFermentingRecipe::getInputs),
-                    ItemStack.CODEC
-                        .fieldOf("result")
-                        .validate(output -> {
-                            if (output.isEmpty()) {
-                                return DataResult.error(() -> "No output for fermenting recipe");
-                            }
+                                                return DataResult.success(inputs);
+                                            })
+                                            .forGetter(BarrelFermentingRecipe::getInputs),
+                                    ItemStack.CODEC
+                                            .fieldOf("result")
+                                            .validate(output -> {
+                                                if (output.isEmpty()) {
+                                                    return DataResult.error(() -> "No output for fermenting recipe");
+                                                }
 
-                            return DataResult.success(output);
-                        })
-                        .forGetter(BarrelFermentingRecipe::getOutput)
-                )
-                    .apply(instance, BarrelFermentingRecipe::new)
+                                                return DataResult.success(output);
+                                            })
+                                            .forGetter(BarrelFermentingRecipe::getOutput)
+                            )
+                            .apply(instance, BarrelFermentingRecipe::new)
             );
         }
 
         @Override
         public PacketCodec<RegistryByteBuf, BarrelFermentingRecipe> packetCodec() {
             return PacketCodec.tuple(
-                CustomPacketCodecs.INGREDIENT_LIST, BarrelFermentingRecipe::getInputs,
-                ItemStack.PACKET_CODEC, BarrelFermentingRecipe::getOutput,
+                    CustomPacketCodecs.INGREDIENT_LIST, BarrelFermentingRecipe::getInputs,
+                    ItemStack.PACKET_CODEC, BarrelFermentingRecipe::getOutput,
 
-                BarrelFermentingRecipe::new
+                    BarrelFermentingRecipe::new
             );
         }
     }

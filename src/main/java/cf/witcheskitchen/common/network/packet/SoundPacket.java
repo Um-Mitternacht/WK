@@ -12,24 +12,24 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 public record SoundPacket(
-    BlockPos pos,
-    Identifier sound,
-    SoundCategory category
+        BlockPos pos,
+        Identifier sound,
+        SoundCategory category
 ) implements CustomPayload {
     public static final Id<SoundPacket> ID = new Id<>(WitchesKitchen.id("sound"));
     public static final Type<RegistryByteBuf, SoundPacket> TYPE = new Type<>(ID, PacketCodec.tuple(
-        BlockPos.PACKET_CODEC, SoundPacket::pos,
-        Identifier.PACKET_CODEC, SoundPacket::sound,
-        CustomPacketCodecs.SOUND_CATEGORY, SoundPacket::category,
-        SoundPacket::new
+            BlockPos.PACKET_CODEC, SoundPacket::pos,
+            Identifier.PACKET_CODEC, SoundPacket::sound,
+            CustomPacketCodecs.SOUND_CATEGORY, SoundPacket::category,
+            SoundPacket::new
     ));
+
+    public static void send(ServerPlayerEntity player, BlockPos pos, Identifier sound, SoundCategory category) {
+        ServerPlayNetworking.send(player, new SoundPacket(pos, sound == null ? Identifier.of("") : sound, category));
+    }
 
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
-    }
-
-    public static void send(ServerPlayerEntity player, BlockPos pos, Identifier sound, SoundCategory category) {
-        ServerPlayNetworking.send(player, new SoundPacket(pos, sound == null ? Identifier.of("") : sound, category));
     }
 }

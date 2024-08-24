@@ -35,7 +35,7 @@
       "cf.witcheskitchen.data.WKDatagen"
     ],
     "cardinal-components-entity": [
-        "cf.witcheskitchen.common.component.WKEntityComponents"
+      "cf.witcheskitchen.common.component.WKEntityComponents"
     ]
   },
   "mixins": [

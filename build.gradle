@@ -119,7 +119,8 @@ dependencies {
     modRuntimeOnly "lol.bai:badpackets:fabric-${badpacketsVersion}"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
-    modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_version") { // required for making REI integration work
+    modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_version") {
+        // required for making REI integration work
         exclude(group: "net.fabricmc.fabric-api")
     }
     modCompileOnlyApi("mezz.jei:jei-${mc_version}-common-api:${jei_version}")

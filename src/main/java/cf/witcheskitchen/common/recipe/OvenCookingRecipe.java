@@ -56,43 +56,43 @@ public record OvenCookingRecipe(Ingredient input, List<ItemStack> outputs, int t
         @Override
         public MapCodec<OvenCookingRecipe> codec() {
             return RecordCodecBuilder
-                .mapCodec(instance ->
-                    instance.group(
-                            Ingredient.DISALLOW_EMPTY_CODEC
-                                .fieldOf("ingredient")
-                                .forGetter(OvenCookingRecipe::input),
-                            ItemStack.CODEC
-                                .listOf()
-                                .fieldOf("results")
-                                .validate(outputs -> {
-                                    if (outputs.isEmpty()) {
-                                        return DataResult.error(() -> "No output for Witches' Oven recipe");
-                                    } else if (outputs.size() > 2) {
-                                        return DataResult.error(() -> "Too many outputs for Witches' Oven recipe");
-                                    }
+                    .mapCodec(instance ->
+                            instance.group(
+                                            Ingredient.DISALLOW_EMPTY_CODEC
+                                                    .fieldOf("ingredient")
+                                                    .forGetter(OvenCookingRecipe::input),
+                                            ItemStack.CODEC
+                                                    .listOf()
+                                                    .fieldOf("results")
+                                                    .validate(outputs -> {
+                                                        if (outputs.isEmpty()) {
+                                                            return DataResult.error(() -> "No output for Witches' Oven recipe");
+                                                        } else if (outputs.size() > 2) {
+                                                            return DataResult.error(() -> "Too many outputs for Witches' Oven recipe");
+                                                        }
 
-                                    return DataResult.success(outputs);
-                                })
-                                .forGetter(OvenCookingRecipe::outputs),
-                            Codec.INT
-                                .fieldOf("time")
-                                .forGetter(OvenCookingRecipe::time),
-                            Codec.FLOAT
-                                .fieldOf("experience")
-                                .forGetter(OvenCookingRecipe::xp)
-                        )
-                        .apply(instance, OvenCookingRecipe::new)
-                );
+                                                        return DataResult.success(outputs);
+                                                    })
+                                                    .forGetter(OvenCookingRecipe::outputs),
+                                            Codec.INT
+                                                    .fieldOf("time")
+                                                    .forGetter(OvenCookingRecipe::time),
+                                            Codec.FLOAT
+                                                    .fieldOf("experience")
+                                                    .forGetter(OvenCookingRecipe::xp)
+                                    )
+                                    .apply(instance, OvenCookingRecipe::new)
+                    );
         }
 
         @Override
         public PacketCodec<RegistryByteBuf, OvenCookingRecipe> packetCodec() {
             return PacketCodec.tuple(
-                Ingredient.PACKET_CODEC, OvenCookingRecipe::input,
-                ItemStack.LIST_PACKET_CODEC, OvenCookingRecipe::outputs,
-                PacketCodecs.VAR_INT, OvenCookingRecipe::time,
-                PacketCodecs.FLOAT, OvenCookingRecipe::xp,
-                OvenCookingRecipe::new
+                    Ingredient.PACKET_CODEC, OvenCookingRecipe::input,
+                    ItemStack.LIST_PACKET_CODEC, OvenCookingRecipe::outputs,
+                    PacketCodecs.VAR_INT, OvenCookingRecipe::time,
+                    PacketCodecs.FLOAT, OvenCookingRecipe::xp,
+                    OvenCookingRecipe::new
             );
         }
     }

@@ -48,25 +48,25 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class FluidStack implements Comparable<FluidStack> {
     public static final Codec<FluidStack> CODEC = RecordCodecBuilder.create(instance ->
-        instance.group(
-            Registries.FLUID.getCodec()
-                .fieldOf("fluid")
-                .forGetter(FluidStack::getFluid),
-            Codec.INT
-                .fieldOf("amount")
-                .forGetter(FluidStack::getAmount),
-            NbtCompound.CODEC
-                .optionalFieldOf("data", null)
-                .forGetter(FluidStack::getNbt)
-        )
-            .apply(instance, FluidStack::new)
+            instance.group(
+                            Registries.FLUID.getCodec()
+                                    .fieldOf("fluid")
+                                    .forGetter(FluidStack::getFluid),
+                            Codec.INT
+                                    .fieldOf("amount")
+                                    .forGetter(FluidStack::getAmount),
+                            NbtCompound.CODEC
+                                    .optionalFieldOf("data", null)
+                                    .forGetter(FluidStack::getNbt)
+                    )
+                    .apply(instance, FluidStack::new)
     );
 
     public static final PacketCodec<RegistryByteBuf, FluidStack> PACKET_CODEC = PacketCodec.tuple(
-        PacketCodecs.registryValue(RegistryKeys.FLUID), FluidStack::getFluid,
-        PacketCodecs.VAR_INT, FluidStack::getAmount,
-        PacketCodecs.NBT_COMPOUND, FluidStack::getNbt,
-        FluidStack::new
+            PacketCodecs.registryValue(RegistryKeys.FLUID), FluidStack::getFluid,
+            PacketCodecs.VAR_INT, FluidStack::getAmount,
+            PacketCodecs.NBT_COMPOUND, FluidStack::getNbt,
+            FluidStack::new
     );
 
     /**

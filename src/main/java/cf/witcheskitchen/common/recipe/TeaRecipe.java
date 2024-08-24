@@ -75,28 +75,28 @@ public class TeaRecipe implements Recipe<SingleStackRecipeInput> {
         @Override
         public MapCodec<TeaRecipe> codec() {
             return RecordCodecBuilder.mapCodec(instance ->
-                instance.group(
-                    Ingredient.DISALLOW_EMPTY_CODEC
-                        .fieldOf("ingredient")
-                        .forGetter(TeaRecipe::getInput),
-                    ItemStack.CODEC
-                        .fieldOf("result")
-                        .forGetter(TeaRecipe::getOutput),
-                    Registries.STATUS_EFFECT.getCodec()
-                        .fieldOf("effect")
-                        .forGetter(TeaRecipe::getEffect)
-                )
-                    .apply(instance, TeaRecipe::new)
+                    instance.group(
+                                    Ingredient.DISALLOW_EMPTY_CODEC
+                                            .fieldOf("ingredient")
+                                            .forGetter(TeaRecipe::getInput),
+                                    ItemStack.CODEC
+                                            .fieldOf("result")
+                                            .forGetter(TeaRecipe::getOutput),
+                                    Registries.STATUS_EFFECT.getCodec()
+                                            .fieldOf("effect")
+                                            .forGetter(TeaRecipe::getEffect)
+                            )
+                            .apply(instance, TeaRecipe::new)
             );
         }
 
         @Override
         public PacketCodec<RegistryByteBuf, TeaRecipe> packetCodec() {
             return PacketCodec.tuple(
-                Ingredient.PACKET_CODEC, TeaRecipe::getInput,
-                ItemStack.PACKET_CODEC, TeaRecipe::getOutput,
-                PacketCodecs.registryValue(RegistryKeys.STATUS_EFFECT), TeaRecipe::getEffect,
-                TeaRecipe::new
+                    Ingredient.PACKET_CODEC, TeaRecipe::getInput,
+                    ItemStack.PACKET_CODEC, TeaRecipe::getOutput,
+                    PacketCodecs.registryValue(RegistryKeys.STATUS_EFFECT), TeaRecipe::getEffect,
+                    TeaRecipe::new
             );
         }
     }
