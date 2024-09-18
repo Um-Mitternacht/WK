@@ -11,7 +11,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.*;
 import org.jetbrains.annotations.Nullable;
@@ -119,13 +119,13 @@ public abstract class WKTallCropBlock extends WKCropBlock {
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         if (!world.isClient) {
             if (player.isCreative()) {
                 WKTallCropBlock.onBreakInCreative(world, pos, state, player);
             }
         }
-        super.onBreak(world, pos, state, player);
+        return super.onBreak(world, pos, state, player);
     }
 
     public BlockState withHalf(int age, DoubleBlockHalf half) {
@@ -140,7 +140,7 @@ public abstract class WKTallCropBlock extends WKCropBlock {
      * Updates the crop age
      */
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, RandomGenerator random) {
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         // Initial age
         final int age = this.getAge(state);
         // First we check if there is enough light

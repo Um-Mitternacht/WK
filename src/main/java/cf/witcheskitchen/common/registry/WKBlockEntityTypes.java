@@ -10,7 +10,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.math.BlockPos;
-import org.quiltmc.qsl.block.entity.api.QuiltBlockEntityTypeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +21,7 @@ public interface WKBlockEntityTypes {
     List<ObjectDefinition<BlockEntityType<?>>> BLOCK_ENTITY_TYPES = new ArrayList<>();
 
     static <E extends BlockEntity> BlockEntityType<E> register(final String path, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {
-        final BlockEntityType<E> type = QuiltBlockEntityTypeBuilder.create(factory::apply, blocks).build();
+        final BlockEntityType<E> type = BlockEntityType.Builder.create(factory::apply, blocks).build();
         BLOCK_ENTITY_TYPES.add(new ObjectDefinition<>(WitchesKitchen.id(path), type));
         return type;
     }

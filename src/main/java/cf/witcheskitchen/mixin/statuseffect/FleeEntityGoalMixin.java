@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.entry.RegistryEntry;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +33,7 @@ public abstract class FleeEntityGoalMixin<T extends LivingEntity> extends Goal {
 
     @Inject(method = "canStart", at = @At("TAIL"), cancellable = true)
     private void canStart(CallbackInfoReturnable<Boolean> cir) {
-        Map<Class<? extends MobEntity>, StatusEffect> fleeEffects = new HashMap<>();
+        Map<Class<? extends MobEntity>, RegistryEntry<StatusEffect>> fleeEffects = new HashMap<>();
         fleeEffects.put(CreeperEntity.class, WKStatusEffects.FELIFORM);
         fleeEffects.put(SilverfishEntity.class, WKStatusEffects.BUG_SPRAY);
         fleeEffects.put(EndermiteEntity.class, WKStatusEffects.BUG_SPRAY);
@@ -42,7 +43,7 @@ public abstract class FleeEntityGoalMixin<T extends LivingEntity> extends Goal {
 
         Class<? extends MobEntity> mobClass = this.mob.getClass();
         if (fleeEffects.containsKey(mobClass) && this.targetEntity instanceof PlayerEntity player) {
-            StatusEffect effect = fleeEffects.get(mobClass);
+            RegistryEntry<StatusEffect> effect = fleeEffects.get(mobClass);
             cir.setReturnValue(player.hasStatusEffect(effect));
         }
     }

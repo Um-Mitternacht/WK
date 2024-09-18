@@ -10,7 +10,6 @@ import cf.witcheskitchen.common.block.*;
 import cf.witcheskitchen.common.block.crop.*;
 import cf.witcheskitchen.common.block.crop.types.*;
 import cf.witcheskitchen.common.block.sapling.WKSaplingBlock;
-import cf.witcheskitchen.common.world.generator.WKSaplingGenerator;
 import cf.witcheskitchen.data.worldgen.WKConfiguredFeatures;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
@@ -250,7 +249,7 @@ public interface WKBlocks {
     Block SANGUINARY_PLANT = register("sanguinary_plant", new WildPlantCropBlock(getCropSettings(), SANGUINARY), false);
     Block MINT = register("mint", new MintCropBlock(AbstractBlock.Settings.copy(Blocks.CORNFLOWER).noCollision().ticksRandomly().breakInstantly().sounds(BlockSoundGroup.CROP)), false);
     Block WORMWOOD = register("wormwood", new WormwoodCropBlock(AbstractBlock.Settings.copy(Blocks.CORNFLOWER).noCollision().ticksRandomly().breakInstantly().sounds(BlockSoundGroup.CROP)), false);
-    Block SALT_BLOCK = register("salt", new SaltBlock(AbstractBlock.Settings.copy(Material.DECORATION).noCollision().breakInstantly()), true);
+    Block SALT_BLOCK = register("salt", new SaltBlock(AbstractBlock.Settings.copy(Blocks.FLOWER_POT).noCollision().breakInstantly()), true);
 
     static AbstractBlock.Settings getCropSettings() {
         return AbstractBlock.Settings.copy(Blocks.CORNFLOWER).noCollision().breakInstantly().sounds(BlockSoundGroup.CROP);
@@ -308,7 +307,7 @@ public interface WKBlocks {
     }
 
     private static Block registerSapling(String path, ConfiguredFeature<TreeFeatureConfig, ?> feature) {
-        final Block sapling = new WKSaplingBlock(new WKSaplingGenerator(feature),
+        final Block sapling = new WKSaplingBlock(new SaplingGenerator(path, Optional.empty(), Optional.of(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(feature)), Optional.empty()),
                 AbstractBlock.Settings.copy(Blocks.OAK_SAPLING)
                         .noCollision()
                         .ticksRandomly()

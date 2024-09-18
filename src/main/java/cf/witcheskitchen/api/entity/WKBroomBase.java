@@ -3,12 +3,14 @@ package cf.witcheskitchen.api.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -25,7 +27,7 @@ public abstract class WKBroomBase extends Entity {
     public ActionResult interact(PlayerEntity player, Hand hand) {
         if (player.shouldCancelInteraction()) {
             return ActionResult.PASS;
-        } else if (!world.isClient) {
+        } else if (!this.getWorld().isClient) {
             if (player.isSneaking() && player.getMainHandStack().isEmpty()) {
                 return pickUpBroom(player);
             } else {
@@ -42,7 +44,7 @@ public abstract class WKBroomBase extends Entity {
     }
 
     @Override
-    protected void initDataTracker() {
+    protected void initDataTracker(DataTracker.Builder builder) {
     }
 
     @Override
@@ -54,8 +56,8 @@ public abstract class WKBroomBase extends Entity {
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket() {
-        return new EntitySpawnS2CPacket(this, 0);
+    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
+        return new EntitySpawnS2CPacket(this, entityTrackerEntry);
     }
 
     @Override

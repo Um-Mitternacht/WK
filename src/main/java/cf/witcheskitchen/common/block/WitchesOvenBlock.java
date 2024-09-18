@@ -20,8 +20,8 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -89,29 +89,28 @@ public class WitchesOvenBlock extends WKBlock implements Waterloggable {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ItemActionResult onUseWithItem(ItemStack stackInHand, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         final var entity = world.getBlockEntity(pos);
         if (entity instanceof WitchesOvenBlockEntity oven) {
             // Try to insert item on top
             if (hit.getType() == HitResult.Type.BLOCK) {
                 final Direction side = hit.getSide();
                 if (side == Direction.UP) {
-                    final ItemStack stackInHand = player.getStackInHand(hand);
                     final CampfireCookingRecipe passiveRecipe = oven.getCampfireRecipeFor(world, stackInHand);
                     // It can only place an item if it is part of a campfire recipe
                     if (!world.isClient() && passiveRecipe != null) {
                         if (oven.putItemOnTop(player.isCreative() ? stackInHand.copy() : stackInHand)) {
-                            return ActionResult.SUCCESS;
+                            return ItemActionResult.SUCCESS;
                         }
-                        return ActionResult.CONSUME;
+                        return ItemActionResult.CONSUME;
                     }
                 } else {
                     // Open GUI
-                    return super.onUse(state, world, pos, player, hand, hit);
+                    return super.onUseWithItem(stackInHand, state, world, pos, player, hand, hit);
                 }
             }
         }
-        return ActionResult.PASS;
+        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

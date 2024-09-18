@@ -2,7 +2,7 @@ package cf.witcheskitchen.common.registry;
 
 import cf.witcheskitchen.common.event.WKEventsHandler;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 
 public interface WKEventsRegistry {
 

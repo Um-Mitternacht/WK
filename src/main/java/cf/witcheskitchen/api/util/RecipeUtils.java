@@ -1,7 +1,6 @@
 package cf.witcheskitchen.api.util;
 
 import cf.witcheskitchen.api.CommandType;
-import cf.witcheskitchen.api.ritual.RitualCircle;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -157,19 +156,6 @@ public final class RecipeUtils {
     public static @Nullable EntityType<?> deserializeEntityType(JsonObject object) {
         final Identifier id = Identifier.tryParse(JsonHelper.getString(object, "entity"));
         return Registries.ENTITY_TYPE.get(id);
-    }
-
-    public static @NotNull Set<RitualCircle> deserializeCircles(JsonArray array) {
-        if (!array.isEmpty()) {
-            return arrayStream(array.getAsJsonArray()).map(entry -> deserializeCircle(entry.getAsJsonObject())).collect(Collectors.toSet());
-        }
-        return Set.of();
-    }
-
-    public static @NotNull RitualCircle deserializeCircle(JsonObject object) {
-        String sizeId = JsonHelper.getString(object, "size");
-        String typeId = JsonHelper.getString(object, "type");
-        return new RitualCircle(RitualCircle.getSize(sizeId), RitualCircle.getType(typeId));
     }
 
     public static DefaultedList<Ingredient> getIngredients(JsonArray json) {

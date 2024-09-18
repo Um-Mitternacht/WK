@@ -1,11 +1,12 @@
 package cf.witcheskitchen.api;
 
+import cf.witcheskitchen.common.component.WKComponents;
 import cf.witcheskitchen.common.item.TaglockItem;
 import cf.witcheskitchen.common.registry.WKTags;
-import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -19,9 +20,8 @@ public class WKApi {
      * Use this if you wish to blanket-target such entities.
      */
     public static boolean isSpiritualEntity(LivingEntity entity) {
-        return entity.isUndead() ||
-                entity.getGroup() == WKCreatureTypeEnum.DEMONIC ||
-                entity.getGroup() == EntityGroup.UNDEAD ||
+        return entity.getType().isIn(EntityTypeTags.UNDEAD) ||
+                entity.getType().isIn(WKTags.DEMONIC) ||
                 entity instanceof EndermanEntity ||
                 entity instanceof GhastEntity ||
                 entity instanceof BlazeEntity ||
@@ -110,13 +110,13 @@ public class WKApi {
     }
 
     public static boolean hasTaglock(ItemStack stack) {
-        return stack.hasNbt() && stack.getOrCreateNbt().contains("Uuid");
+        return stack.contains(WKComponents.TAGLOCK);
     }
 
     @Nullable
     public static UUID getTaglockUUID(ItemStack stack) {
         if (hasTaglock(stack)) {
-            return stack.getOrCreateNbt().getUuid("Uuid");
+            return stack.get(WKComponents.TAGLOCK).uuid();
         }
         return null;
     }

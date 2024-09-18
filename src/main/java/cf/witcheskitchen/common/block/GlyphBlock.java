@@ -5,7 +5,6 @@ import cf.witcheskitchen.common.blockentity.GlyphBlockEntity;
 import cf.witcheskitchen.common.registry.WKBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,7 +46,7 @@ public class GlyphBlock extends WKBlockWithEntity {
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(FACING, ctx.getPlayerFacing()).with(GLYPH, ctx.getWorld().random.nextInt(9));
+        return this.getDefaultState().with(FACING, ctx.getPlayerLookDirection()).with(GLYPH, ctx.getWorld().random.nextInt(9));
     }
 
     @Nullable
@@ -74,6 +73,6 @@ public class GlyphBlock extends WKBlockWithEntity {
 
     @Override
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
-        return Blocks.TORCH.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
+        return state;
     }
 }

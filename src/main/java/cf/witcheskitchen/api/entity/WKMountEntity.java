@@ -1,5 +1,7 @@
 package cf.witcheskitchen.api.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.JumpingMount;
 import net.minecraft.entity.Saddleable;
@@ -8,14 +10,13 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.InventoryChangedListener;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 //Todo: Revamp texture variants and their code
 public abstract class WKMountEntity extends AnimalEntity implements InventoryChangedListener, JumpingMount, Saddleable {
@@ -27,9 +28,9 @@ public abstract class WKMountEntity extends AnimalEntity implements InventoryCha
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.getDataTracker().startTracking(VARIANT, 0);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(VARIANT, 0);
     }
 
     @Override
@@ -38,7 +39,7 @@ public abstract class WKMountEntity extends AnimalEntity implements InventoryCha
     }
 
     @Override
-    public boolean canJump(PlayerEntity playerEntity) {
+    public boolean canJump() {
         return false;
     }
 
@@ -58,7 +59,7 @@ public abstract class WKMountEntity extends AnimalEntity implements InventoryCha
     }
 
     @Override
-    public void saddle(@Nullable SoundCategory sound) {
+    public void saddle(ItemStack stack, @Nullable SoundCategory soundCategory) {
 
     }
 
@@ -79,7 +80,7 @@ public abstract class WKMountEntity extends AnimalEntity implements InventoryCha
     }
 
     @Override
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public boolean shouldRender(double distance) {
         return true;
     }

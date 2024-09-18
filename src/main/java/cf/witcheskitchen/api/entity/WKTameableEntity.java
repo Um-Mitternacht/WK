@@ -1,5 +1,7 @@
 package cf.witcheskitchen.api.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -8,7 +10,6 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 //Todo: Revamp texture variants and their code
 public abstract class WKTameableEntity extends TameableEntity {
@@ -27,10 +28,10 @@ public abstract class WKTameableEntity extends TameableEntity {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.getDataTracker().startTracking(VARIANT, 0);
-        this.dataTracker.startTracking(POSE_FLAGS, (byte) 0b0000_0000);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(VARIANT, 0);
+        builder.add(POSE_FLAGS, (byte) 0b0000_0000);
     }
 
     @Override
@@ -79,7 +80,7 @@ public abstract class WKTameableEntity extends TameableEntity {
     }
 
     @Override
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public boolean shouldRender(double distance) {
         return true;
     }

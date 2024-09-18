@@ -1,12 +1,12 @@
 package cf.witcheskitchen.common.block.sapling;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.SaplingBlock;
-import net.minecraft.block.sapling.SaplingGenerator;
-import org.quiltmc.qsl.block.extensions.api.QuiltBlockSettings;
+import net.minecraft.block.SaplingGenerator;
 
 public class WKSaplingBlock extends SaplingBlock {
 
-    public WKSaplingBlock(SaplingGenerator generator, QuiltBlockSettings settings) {
+    public WKSaplingBlock(SaplingGenerator generator, AbstractBlock.Settings settings) {
         super(generator, settings);
     }
 }

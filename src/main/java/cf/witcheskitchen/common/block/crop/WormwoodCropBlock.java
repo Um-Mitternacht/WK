@@ -4,14 +4,15 @@ import cf.witcheskitchen.api.block.crop.WKTallCropBlock;
 import cf.witcheskitchen.api.interfaces.CropVariants;
 import cf.witcheskitchen.api.util.SeedTypeHelper;
 import cf.witcheskitchen.common.block.crop.types.WormwoodTypes;
+import cf.witcheskitchen.common.component.WKComponents;
 import cf.witcheskitchen.common.registry.WKItems;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.shape.VoxelShape;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 public class WormwoodCropBlock extends WKTallCropBlock implements CropVariants {
     public static final VoxelShape[] LOWER_AGE_TO_SHAPE;
@@ -64,13 +65,12 @@ public class WormwoodCropBlock extends WKTallCropBlock implements CropVariants {
         return IntProperty.of("age", 0, MAX_AGE);
     }
 
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     @Override
     protected ItemStack getSeedsItemStack() {
-        NbtCompound nbt = new NbtCompound();
-        SeedTypeHelper.toComponent(nbt, type.getName(), type.getType(), type.getColor());
+        var component = SeedTypeHelper.toComponent(type.getName(), type.getType(), type.getColor());
         ItemStack seed = new ItemStack(WKItems.WORMWOOD_SEEDS);
-        seed.getOrCreateNbt().copyFrom(nbt);
+        seed.set(WKComponents.SEED_TYPE, component);
         return seed;
     }
 

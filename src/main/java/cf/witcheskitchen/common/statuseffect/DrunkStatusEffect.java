@@ -1,8 +1,6 @@
 package cf.witcheskitchen.common.statuseffect;
 
-import cf.witcheskitchen.common.registry.WKStatusEffects;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -30,20 +28,25 @@ public class DrunkStatusEffect extends StatusEffect {
     public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (amplifier == 1) {
             entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 2000, 1));
+            return true;
         }
         if (amplifier == 2) {
             entity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 4000, 2));
             entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 4000, 2));
+            return true;
         }
         if (amplifier >= 3) {
             entity.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 6000, 3));
             entity.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 6000, 3));
             entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 6000, 3));
+            return true;
         }
+        return false;
     }
 
     //NOTICE: Values are not final! These will change once the alcohol system is fully functional
-    @Override
+    // FIXME: The entity is no longer provided to the onRemoved method, how do we do this now?
+    /*@Override
     public void onRemoved(LivingEntity entity, AttributeContainer attributes, int amplifier) {
         if (amplifier >= 3) {
             entity.addStatusEffect(new StatusEffectInstance(WKStatusEffects.DRUNK, 3000, 2));
@@ -54,5 +57,5 @@ public class DrunkStatusEffect extends StatusEffect {
         if (amplifier == 1) {
             entity.addStatusEffect(new StatusEffectInstance(WKStatusEffects.DRUNK, 1000, 0));
         }
-    }
+    }*/
 }

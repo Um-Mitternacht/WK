@@ -91,6 +91,7 @@ loom {
         }
     }
 
+    accessWidenerPath = file("src/main/resources/wk.accesswidener")
 }
 
 dependencies {

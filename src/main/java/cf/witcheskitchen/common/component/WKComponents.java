@@ -9,7 +9,13 @@ import cf.witcheskitchen.common.component.item.TaglockEntityData;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.UUID;
 
 public class WKComponents {
     public static final ComponentType<BlockPos> BLOCK_POS = register("block_pos", ComponentType.<BlockPos>builder()
@@ -46,6 +52,18 @@ public class WKComponents {
             .codec(SeedTypeData.CODEC)
             .packetCodec(SeedTypeData.PACKET_CODEC)
             .build()
+    );
+
+    public static final ComponentType<RegistryKey<World>> DIMENSION = register("dimension", ComponentType.<RegistryKey<World>>builder()
+        .codec(RegistryKey.createCodec(RegistryKeys.WORLD))
+        .packetCodec(RegistryKey.createPacketCodec(RegistryKeys.WORLD))
+        .build()
+    );
+
+    public static final ComponentType<UUID> UUID = register("uuid", ComponentType.<UUID>builder()
+        .codec(Uuids.INT_STREAM_CODEC)
+        .packetCodec(Uuids.PACKET_CODEC)
+        .build()
     );
 
     private static <T> ComponentType<T> register(String name, ComponentType<T> component) {

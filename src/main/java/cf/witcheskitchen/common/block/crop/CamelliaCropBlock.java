@@ -4,24 +4,24 @@ import cf.witcheskitchen.api.block.crop.WKTallCropBlock;
 import cf.witcheskitchen.api.interfaces.CropVariants;
 import cf.witcheskitchen.api.util.SeedTypeHelper;
 import cf.witcheskitchen.common.block.crop.types.CamelliaTypes;
+import cf.witcheskitchen.common.component.WKComponents;
 import cf.witcheskitchen.common.registry.WKItems;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.random.RandomGenerator;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 import java.util.Optional;
 
@@ -65,14 +65,14 @@ public class CamelliaCropBlock extends WKTallCropBlock implements CropVariants {
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         Optional<CamelliaTypes> nextType = type.next(type);
         if (nextType.isPresent()) {
-            NbtCompound nbtCompound = new NbtCompound();
-            SeedTypeHelper.toComponent(nbtCompound, nextType.get().getName(), nextType.get().getType(), nextType.get().getColor());
-            getNextSeed(world, pos, nbtCompound);
+            var component = SeedTypeHelper.toComponent(nextType.get().getName(), nextType.get().getType(), nextType.get().getColor());
+            getNextSeed(world, pos, component);
         }
         super.onBreak(world, pos, state, player);
+        return state;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CamelliaCropBlock extends WKTallCropBlock implements CropVariants {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, RandomGenerator random) {
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         final int age = this.getAge(state);
         boolean bl = age == 4;
         if (world.getBaseLightLevel(pos, 0) >= 9) {
@@ -106,7 +106,7 @@ public class CamelliaCropBlock extends WKTallCropBlock implements CropVariants {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (state.get(HALF) == DoubleBlockHalf.UPPER) {
             pos = pos.down();
         }
@@ -115,7 +115,7 @@ public class CamelliaCropBlock extends WKTallCropBlock implements CropVariants {
             world.setBlockState(pos, this.withHalf(this.getAge(state) - 2, DoubleBlockHalf.LOWER), Block.NOTIFY_LISTENERS);
             world.setBlockState(pos.up(), this.withHalf(this.getAge(state) - 2, DoubleBlockHalf.UPPER), Block.NOTIFY_LISTENERS);
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
@@ -133,13 +133,12 @@ public class CamelliaCropBlock extends WKTallCropBlock implements CropVariants {
         return IntProperty.of("age", 0, MAX_AGE);
     }
 
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     @Override
     protected ItemStack getSeedsItemStack() {
-        NbtCompound nbt = new NbtCompound();
-        SeedTypeHelper.toComponent(nbt, type.getName(), type.getType(), type.getColor());
+        var component = SeedTypeHelper.toComponent(type.getName(), type.getType(), type.getColor());
         ItemStack seed = new ItemStack(WKItems.CAMELLIA_SEEDS);
-        seed.getOrCreateNbt().copyFrom(nbt);
+        seed.set(WKComponents.SEED_TYPE, component);
         return seed;
     }
 

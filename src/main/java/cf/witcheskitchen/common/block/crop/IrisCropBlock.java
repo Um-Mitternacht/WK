@@ -4,17 +4,18 @@ import cf.witcheskitchen.api.block.crop.WKTallCropBlock;
 import cf.witcheskitchen.api.interfaces.CropVariants;
 import cf.witcheskitchen.api.util.SeedTypeHelper;
 import cf.witcheskitchen.common.block.crop.types.IrisTypes;
+import cf.witcheskitchen.common.component.WKComponents;
 import cf.witcheskitchen.common.registry.WKItems;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 import java.util.Optional;
 
@@ -62,14 +63,14 @@ public class IrisCropBlock extends WKTallCropBlock implements CropVariants {
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         Optional<IrisTypes> nextType = type.next(type);
         if (nextType.isPresent()) {
-            NbtCompound nbtCompound = new NbtCompound();
-            SeedTypeHelper.toComponent(nbtCompound, nextType.get().getName(), nextType.get().getType(), nextType.get().getColor());
-            getNextSeed(world, pos, nbtCompound);
+            var component = SeedTypeHelper.toComponent(nextType.get().getName(), nextType.get().getType(), nextType.get().getColor());
+            getNextSeed(world, pos, component);
         }
         super.onBreak(world, pos, state, player);
+        return state;
     }
 
     @Override
@@ -77,13 +78,12 @@ public class IrisCropBlock extends WKTallCropBlock implements CropVariants {
         return IntProperty.of("age", 0, MAX_AGE);
     }
 
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     @Override
     protected ItemStack getSeedsItemStack() {
-        NbtCompound nbt = new NbtCompound();
-        SeedTypeHelper.toComponent(nbt, type.getName(), type.getType(), type.getColor());
+        var component = SeedTypeHelper.toComponent(type.getName(), type.getType(), type.getColor());
         ItemStack seed = new ItemStack(WKItems.IRIS_SEEDS);
-        seed.getOrCreateNbt().copyFrom(nbt);
+        seed.set(WKComponents.SEED_TYPE, component);
         return seed;
     }
 

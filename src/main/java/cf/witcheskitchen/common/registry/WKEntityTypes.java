@@ -7,15 +7,13 @@ import cf.witcheskitchen.common.entity.hostile.RoggenwolfEntity;
 import cf.witcheskitchen.common.entity.neutral.ChurchGrimEntity;
 import cf.witcheskitchen.common.entity.tameable.FerretEntity;
 import cf.witcheskitchen.common.entity.tameable.HedgehogEntity;
-import net.minecraft.entity.EntityDimensions;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.DefaultAttributeRegistry;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import org.quiltmc.qsl.entity.api.QuiltEntityTypeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,24 +23,24 @@ public interface WKEntityTypes {
     List<ObjectDefinition<EntityType<?>>> ENTITY_TYPES = new ArrayList<>();
 
     //monsters
-    EntityType<CuSithEntity> CUSITH = create("cusith", CuSithEntity.createAttributes(), QuiltEntityTypeBuilder.create(SpawnGroup.MONSTER, CuSithEntity::new)
-            .setDimensions(EntityDimensions.changing(1.0f, 1.0f))
+    EntityType<CuSithEntity> CUSITH = create("cusith", CuSithEntity.createAttributes(), EntityType.Builder.create(CuSithEntity::new, SpawnGroup.MONSTER)
+            .dimensions(1.0f, 1.0f)
             .build());
 
     //animals
-    EntityType<FerretEntity> FERRET = create("ferret", FerretEntity.createAttributes(), QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, FerretEntity::new)
-            .setDimensions(EntityDimensions.changing(1.0f, 1.0f))
+    EntityType<FerretEntity> FERRET = create("ferret", FerretEntity.createAttributes(), EntityType.Builder.create(FerretEntity::new, SpawnGroup.CREATURE)
+            .dimensions(1.0f, 1.0f)
             .build());
-    EntityType<HedgehogEntity> HEDGEHOG = create("hedgehog", HedgehogEntity.createAttributes(), QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, HedgehogEntity::new)
-            .setDimensions(EntityDimensions.changing(0.25f, 0.25f))
-            .build());
-
-    EntityType<ChurchGrimEntity> CHURCH_GRIM = create("church_grim", ChurchGrimEntity.createAttributes(), QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, ChurchGrimEntity::new)
-            .setDimensions(EntityDimensions.changing(1.0f, 1.0f))
+    EntityType<HedgehogEntity> HEDGEHOG = create("hedgehog", HedgehogEntity.createAttributes(), EntityType.Builder.create(HedgehogEntity::new, SpawnGroup.CREATURE)
+            .dimensions(0.25f, 0.25f)
             .build());
 
-    EntityType<RoggenwolfEntity> ROGGENWOLF = create("roggenwolf", RoggenwolfEntity.createAttributes(), QuiltEntityTypeBuilder.create(SpawnGroup.CREATURE, RoggenwolfEntity::new)
-            .setDimensions(EntityDimensions.changing(1.0f, 1.0f))
+    EntityType<ChurchGrimEntity> CHURCH_GRIM = create("church_grim", ChurchGrimEntity.createAttributes(), EntityType.Builder.create(ChurchGrimEntity::new, SpawnGroup.CREATURE)
+            .dimensions(1.0f, 1.0f)
+            .build());
+
+    EntityType<RoggenwolfEntity> ROGGENWOLF = create("roggenwolf", RoggenwolfEntity.createAttributes(), EntityType.Builder.create(RoggenwolfEntity::new, SpawnGroup.CREATURE)
+            .dimensions(1.0f, 1.0f)
             .build());
 
 
@@ -51,8 +49,7 @@ public interface WKEntityTypes {
     }
 
     static <T extends LivingEntity> EntityType<T> create(String name, DefaultAttributeContainer.Builder attributes, EntityType<T> type) {
-        //FabricDefaultAttributeRegistry.register(type, attributes);
-        DefaultAttributeRegistry.DEFAULT_ATTRIBUTE_REGISTRY.put(type, attributes.build());
+        FabricDefaultAttributeRegistry.register(type, attributes);
         ENTITY_TYPES.add(new ObjectDefinition<>(WitchesKitchen.id(name), type));
         return type;
     }

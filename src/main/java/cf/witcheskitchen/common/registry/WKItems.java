@@ -3,12 +3,11 @@ package cf.witcheskitchen.common.registry;
 import cf.witcheskitchen.WitchesKitchen;
 import cf.witcheskitchen.api.registry.ObjectDefinition;
 import cf.witcheskitchen.common.item.*;
-import net.minecraft.item.FoodComponents;
+import net.minecraft.component.type.FoodComponents;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import org.quiltmc.qsl.item.setting.api.QuiltItemSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,8 +119,8 @@ public interface WKItems {
         return Collections.unmodifiableList(ITEMS);
     }
 
-    static QuiltItemSettings settings() {
-        return new QuiltItemSettings();
+    static Item.Settings settings() {
+        return new Item.Settings();
     }
 
     static Item register(String string) {

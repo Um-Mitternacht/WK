@@ -95,10 +95,10 @@ public class FerretEntity extends WKTameableEntity implements GeoEntity, SmartBr
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.set(NIGHT, false);
-        this.dataTracker.set(TARGET_ID, 0);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(NIGHT, false);
+        builder.add(TARGET_ID, 0);
     }
 
     @Override

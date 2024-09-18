@@ -1,5 +1,7 @@
 package cf.witcheskitchen.api.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -7,7 +9,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.world.World;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 //Todo: Revamp texture variants and their code
 //Credit to AzureDoom for variant code
@@ -23,13 +24,13 @@ public abstract class WKHostileEntity extends HostileEntity implements Monster {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.getDataTracker().startTracking(VARIANT, 0);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(VARIANT, 0);
     }
 
     @Override
-    @ClientOnly
+    @Environment(EnvType.CLIENT)
     public boolean shouldRender(double distance) {
         return true;
     }

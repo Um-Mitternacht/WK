@@ -1,21 +1,19 @@
 package cf.witcheskitchen.data;
 
-import cf.witcheskitchen.common.registry.WKBlockEntityTypes;
 import cf.witcheskitchen.common.registry.WKBlocks;
 import cf.witcheskitchen.common.registry.WKItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.block.Block;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.loot.ContainerComponentModifiers;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.loot.entry.DynamicEntry;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.ApplyBonusLootFunction;
 import net.minecraft.loot.function.CopyNameLootFunction;
@@ -23,8 +21,11 @@ import net.minecraft.loot.function.CopyNbtLootFunction;
 import net.minecraft.loot.function.SetContentsLootFunction;
 import net.minecraft.loot.provider.nbt.ContextLootNbtProvider;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.RegistryWrapper;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 public class WKLootTableProvider {
@@ -32,8 +33,8 @@ public class WKLootTableProvider {
     public static class BlockLoot extends FabricBlockLootTableProvider {
         private static final float[] SAPLING_DROP_CHANCE = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
 
-        protected BlockLoot(FabricDataOutput dataOutput) {
-            super(dataOutput);
+        protected BlockLoot(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> future) {
+            super(dataOutput, future);
         }
 
         @Override
@@ -146,20 +147,20 @@ public class WKLootTableProvider {
         }
 
         @Override
-        public void accept(BiConsumer<Identifier, LootTable.Builder> identifierBuilderBiConsumer) {
+        public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> biConsumer) {
 
         }
 
         public void addPlantDrop(Block block, ItemConvertible drop, ItemConvertible seed) {
             LootCondition.Builder builder = BlockStatePropertyLootCondition.builder(block);
-            this.add(block, applyExplosionDecay(
+            this.addDrop(block, applyExplosionDecay(
                     seed, LootTable.builder()
                             .pool(LootPool.builder()
                                     .with(ItemEntry.builder(seed)))
                             .pool(LootPool.builder().conditionally(builder)
                                     .with(ItemEntry.builder(seed)
                                             .apply(ApplyBonusLootFunction
-                                                    .binomialWithBonusCount(Enchantments.FORTUNE, 0.5714286F, 3)))))
+                                                    .binomialWithBonusCount(this.registryLookup.getWrapperOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE), 0.5714286F, 3)))))
                     .pool(LootPool.builder()
                             .with(ItemEntry.builder(drop))));
         }
@@ -173,7 +174,7 @@ public class WKLootTableProvider {
                                                     .withOperation("LootTable", "BlockEntityTag.LootTable")
                                                     .withOperation("LootTableSeed", "BlockEntityTag.LootTableSeed")
                                             )
-                                            .apply(SetContentsLootFunction.builder(WKBlockEntityTypes.BREWING_BARREL).withEntry(DynamicEntry.builder(ShulkerBoxBlock.CONTENTS)))
+                                            .apply(SetContentsLootFunction.builder(ContainerComponentModifiers.CONTAINER))
                                     )
                     )
             );
@@ -188,7 +189,7 @@ public class WKLootTableProvider {
                                                     .withOperation("LootTable", "BlockEntityTag.LootTable")
                                                     .withOperation("LootTableSeed", "BlockEntityTag.LootTableSeed")
                                             )
-                                            .apply(SetContentsLootFunction.builder(WKBlockEntityTypes.WITCHES_OVEN).withEntry(DynamicEntry.builder(ShulkerBoxBlock.CONTENTS)))
+                                            .apply(SetContentsLootFunction.builder(ContainerComponentModifiers.CONTAINER))
                                     )
                     )
             );
@@ -203,7 +204,7 @@ public class WKLootTableProvider {
                                                     .withOperation("LootTable", "BlockEntityTag.LootTable")
                                                     .withOperation("LootTableSeed", "BlockEntityTag.LootTableSeed")
                                             )
-                                            .apply(SetContentsLootFunction.builder(WKBlockEntityTypes.TEAPOT).withEntry(DynamicEntry.builder(ShulkerBoxBlock.CONTENTS)))
+                                            .apply(SetContentsLootFunction.builder(ContainerComponentModifiers.CONTAINER))
                                     )
                     )
             );
@@ -218,7 +219,7 @@ public class WKLootTableProvider {
                                                     .withOperation("LootTable", "BlockEntityTag.LootTable")
                                                     .withOperation("LootTableSeed", "BlockEntityTag.LootTableSeed")
                                             )
-                                            .apply(SetContentsLootFunction.builder(WKBlockEntityTypes.WITCHES_CAULDRON).withEntry(DynamicEntry.builder(ShulkerBoxBlock.CONTENTS)))
+                                            .apply(SetContentsLootFunction.builder(ContainerComponentModifiers.CONTAINER))
                                     )
                     )
             );
@@ -226,12 +227,12 @@ public class WKLootTableProvider {
     }
 
     public static class EntityLoot extends SimpleFabricLootTableProvider {
-        public EntityLoot(FabricDataOutput output) {
-            super(output, LootContextTypes.ENTITY);
+        public EntityLoot(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> lookup) {
+            super(output, lookup, LootContextTypes.ENTITY);
         }
 
         @Override
-        public void accept(BiConsumer<Identifier, LootTable.Builder> identifierBuilderBiConsumer) {
+        public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> lootTableBiConsumer) {
 
         }
     }
