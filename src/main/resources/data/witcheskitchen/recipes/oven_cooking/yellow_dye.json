@@ -1,0 +1,14 @@
+{
+  "type": "witcheskitchen:oven_cooking",
+  "ingredient": {
+    "item": "minecraft:glow_berries"
+  },
+  "results": [
+    {
+      "item": "minecraft:yellow_dye",
+      "count": 3
+    }
+  ],
+  "time": 200,
+  "experience": 0.2
+}

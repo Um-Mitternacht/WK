@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cf.witcheskitchen.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "entity.EntityMixin",
+    "fluid.BottleItemMixin",
+    "fluid.BucketItemMixin",
+    "fluid.PotionItemMixin",
+    "potion.PotionItemMixin",
+    "statuseffect.ActiveTargetGoalMixin",
+    "statuseffect.ArthropodEntityMixin",
+    "statuseffect.CreeperEntityMixin",
+    "statuseffect.FleeEntityGoalMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -38,7 +38,7 @@ repositories {
         url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
     }
     maven {
-        url "https://maven.terraformersmc.com"
+        url "https://maven.terraformersmc.com/releases"
     }
     maven {
         url "https://maven.ryanliptak.com"
@@ -76,6 +76,9 @@ repositories {
     maven {
         url "https://maven.jamieswhiteshirt.com/libs-release"
     }
+    maven {
+        url "https://maven.architectury.dev/"
+    }
 }
 
 loom {
@@ -88,6 +91,7 @@ loom {
         }
     }
 
+    accessWidenerPath = file("src/main/resources/wk.accesswidener")
 }
 
 dependencies {
@@ -116,6 +120,10 @@ dependencies {
     modRuntimeOnly "lol.bai:badpackets:fabric-${badpacketsVersion}"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
+    modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_version") {
+        // required for making REI integration work
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     modCompileOnlyApi("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${mc_version}-fabric-api:${jei_version}")
     runtimeOnly("mezz.jei:jei-${mc_version}-forge:${jei_version}")
@@ -128,10 +136,8 @@ dependencies {
 }
 
 processResources {
-    inputs.property "version", project.version
-
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand(project.properties)
     }
 }
 

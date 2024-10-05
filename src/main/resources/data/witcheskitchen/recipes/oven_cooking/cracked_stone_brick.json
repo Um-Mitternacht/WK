@@ -1,0 +1,14 @@
+{
+  "type": "witcheskitchen:oven_cooking",
+  "ingredient": {
+    "item": "minecraft:stone_bricks"
+  },
+  "results": [
+    {
+      "item": "minecraft:cracked_stone_bricks",
+      "count": 1
+    }
+  ],
+  "time": 200,
+  "experience": 0.2
+}
