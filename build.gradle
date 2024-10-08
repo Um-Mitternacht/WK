@@ -85,13 +85,17 @@ loom {
     splitEnvironmentSourceSets()
 
     mods {
-        "template-mod" {
+        "witcheskitchen" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }
     }
 
     accessWidenerPath = file("src/main/resources/wk.accesswidener")
+}
+
+fabricApi {
+    configureDataGeneration()
 }
 
 dependencies {

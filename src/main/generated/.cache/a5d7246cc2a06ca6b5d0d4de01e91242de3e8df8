@@ -1,0 +1,11 @@
+// 1.21.1	2024-10-08T19:46:16.4751766	Witches' Kitchen/Tags for minecraft:item
+119505af436fca5784bb5847cefd09b10cd6aa62 data\witcheskitchen\tags\item\barrel_blacklist.json
+f470b0889459fb2d48176e69995c70ce18aa66ea data\witcheskitchen\tags\item\resets_cauldron.json
+76dcda69909e8a61917464444183968364df5046 data\minecraft\tags\item\planks.json
+8a3b6c43de5696d22edea798ffefe18769ecd1fb data\witcheskitchen\tags\item\tea_blacklist.json
+2f12d53926b8ec67f00e712c1ee9448c4a9f3389 data\minecraft\tags\item\logs_that_burn.json
+8a3b6c43de5696d22edea798ffefe18769ecd1fb data\witcheskitchen\tags\item\oven_blacklist.json
+26aa6c9051878ff32685cf6e33dcf66c1d317d0c data\witcheskitchen\tags\item\valid_brew_item.json
+2f12d53926b8ec67f00e712c1ee9448c4a9f3389 data\minecraft\tags\item\logs.json
+b7d812ebc990a03cc2533a33d7c6e4907de167ea data\minecraft\tags\item\saplings.json
+8dd843e7fc8a32c4d8133f4ece5677b748bffaf2 data\minecraft\tags\item\leaves.json

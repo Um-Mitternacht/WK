@@ -16,7 +16,7 @@ public class WKDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(WKTagProvider.WKBlockTags::new);
         pack.addProvider(WKTagProvider.WKItemTags::new);
         pack.addProvider(WKTagProvider.WKEntityTypeTags::new);
-        pack.addProvider(WKTagProvider.WKDamageTypeTags::new);
+        //pack.addProvider(WKTagProvider.WKDamageTypeTags::new);
         pack.addProvider(WKAdvancementsProvider::new);
     }
 }

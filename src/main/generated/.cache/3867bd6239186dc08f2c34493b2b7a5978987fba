@@ -1,0 +1,10 @@
+// 1.21.1	2024-10-08T19:46:16.4756767	Witches' Kitchen/Tags for minecraft:entity_type
+ec32a92581623c2e52125b2ab4eb2ab7f784f0b5 data\witcheskitchen\tags\entity_type\ghost.json
+02b6a7799286f073bd43ecf20b3eab2e16d73deb data\witcheskitchen\tags\entity_type\taglock_blacklist.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\witcheskitchen\tags\entity_type\lesser_demon.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\witcheskitchen\tags\entity_type\left_hand_witch_summon.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\witcheskitchen\tags\entity_type\greater_demon.json
+ec32a92581623c2e52125b2ab4eb2ab7f784f0b5 data\minecraft\tags\entity_type\undead.json
+a9baf338bbce5135f6fecadea03379c613576dd2 data\witcheskitchen\tags\entity_type\demonic.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\witcheskitchen\tags\entity_type\right_hand_witch_summon.json
+bff32dc376e5993849f08d218ce9d3a64fb29f9f data\minecraft\tags\entity_type\can_breathe_under_water.json

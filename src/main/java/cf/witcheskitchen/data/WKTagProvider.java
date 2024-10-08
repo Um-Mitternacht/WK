@@ -1,16 +1,16 @@
 package cf.witcheskitchen.data;
 
-import cf.witcheskitchen.common.registry.*;
+import cf.witcheskitchen.common.registry.WKBlocks;
+import cf.witcheskitchen.common.registry.WKEntityTypes;
+import cf.witcheskitchen.common.registry.WKItems;
+import cf.witcheskitchen.common.registry.WKTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.registry.tag.ItemTags;
 
@@ -84,7 +84,8 @@ public class WKTagProvider {
         }
     }
 
-    public static class WKDamageTypeTags extends FabricTagProvider<DamageType> {
+    // FIXME: Damage types aren't being loaded into the registry, for some reason.
+    /*public static class WKDamageTypeTags extends FabricTagProvider<DamageType> {
         public WKDamageTypeTags(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
             super(output, RegistryKeys.DAMAGE_TYPE, registriesFuture);
         }
@@ -101,11 +102,11 @@ public class WKTagProvider {
             getOrCreateTagBuilder(DamageTypeTags.BYPASSES_EFFECTS)
                 .add(WKDamageSources.HOLY);
 
-            getOrCreateTagBuilder(DamageTypeTags.BYPASSES_EFFECTS)
+            getOrCreateTagBuilder(DamageTypeTags.BYPASSES_SHIELD)
                 .add(WKDamageSources.HOLY);
 
             getOrCreateTagBuilder(DamageTypeTags.WITCH_RESISTANT_TO)
                 .add(WKDamageSources.HOLY);
         }
-    }
+    }*/
 }
