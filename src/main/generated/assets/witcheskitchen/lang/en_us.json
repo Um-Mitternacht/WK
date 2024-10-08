@@ -230,7 +230,7 @@
   "screen.title.witcheskitchen.brewing_barrel": "Brewing Barrel",
   "screen.title.witcheskitchen.witches_oven": "Witches' Oven",
   "tooltip.witcheskitchen.blockpos": "Position: ",
-  "tooltip.witcheskitchen.bundle.potency": "Potency",
+  "tooltip.witcheskitchen.bundle.potency": "Potency %s",
   "tooltip.witcheskitchen.dimension": "Dimension: ",
   "tooltip.witcheskitchen.enchanted_glyph": "Enchanted Glyph",
   "tooltip.witcheskitchen.glyph": "Glyph"

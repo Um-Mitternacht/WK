@@ -25,7 +25,7 @@ public class WKLanguageProvider extends FabricLanguageProvider {
         //Tooltip
         builder.add("tooltip.witcheskitchen.glyph", "Glyph");
         builder.add("tooltip.witcheskitchen.enchanted_glyph", "Enchanted Glyph");
-        builder.add("tooltip.witcheskitchen.bundle.potency", "Potency");
+        builder.add("tooltip.witcheskitchen.bundle.potency", "Potency %s");
         builder.add("tooltip.witcheskitchen.blockpos", "Position: ");
         builder.add("tooltip.witcheskitchen.dimension", "Dimension: ");
 
