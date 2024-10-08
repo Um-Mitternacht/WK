@@ -2,8 +2,8 @@ package cf.witcheskitchen.client.model;
 
 import cf.witcheskitchen.WitchesKitchen;
 import cf.witcheskitchen.common.entity.tameable.FerretEntity;
+import mod.azure.azurelib.common.api.client.model.DefaultedEntityGeoModel;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public class FerretEntityModel extends DefaultedEntityGeoModel<FerretEntity> {
     public FerretEntityModel() {
@@ -12,6 +12,6 @@ public class FerretEntityModel extends DefaultedEntityGeoModel<FerretEntity> {
 
     @Override
     public Identifier getTextureResource(FerretEntity object) {
-        return new Identifier(WitchesKitchen.MODID, "textures/entity/ferret_" + object.getVariant() + ".png");
+        return WitchesKitchen.id("textures/entity/ferret_" + object.getVariant() + ".png");
     }
 }

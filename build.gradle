@@ -120,16 +120,16 @@ dependencies {
     modRuntimeOnly "lol.bai:badpackets:fabric-${badpacketsVersion}"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
+    modCompileOnly "dev.architectury:architectury-fabric:$architectury_version"
     modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_version") {
         // required for making REI integration work
         exclude(group: "net.fabricmc.fabric-api")
     }
     modCompileOnlyApi("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${mc_version}-fabric-api:${jei_version}")
-    runtimeOnly("mezz.jei:jei-${mc_version}-forge:${jei_version}")
+    modRuntimeOnly("mezz.jei:jei-${mc_version}-fabric:${jei_version}")
     modCompileOnlyApi "dev.emi:emi-fabric:${emi_version}:api"
-    modImplementation "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
-    include "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
+    include modImplementation("io.github.ladysnake:PlayerAbilityLib:${pal_version}")
     include modApi("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}")
     modImplementation "mod.azure.azurelib:azurelib-fabric-${minecraft_version}:${azurelib_version}"
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${minecraft_version}:${smartbrainlib_version}"

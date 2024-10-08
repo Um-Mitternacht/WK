@@ -1,13 +1,14 @@
 package cf.witcheskitchen.client.registry;
 
 import cf.witcheskitchen.common.registry.WKBlocks;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.color.world.BiomeColors;
-import net.minecraft.client.color.world.FoliageColors;
 import net.minecraft.item.BlockItem;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
+import net.minecraft.world.biome.FoliageColors;
 
-@ClientOnly
+@Environment(EnvType.CLIENT)
 public interface WKColorProviderRegistry {
     static void init() {
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> pos != null && world != null ? BiomeColors.getFoliageColor(world, pos) : FoliageColors.getDefaultColor(),

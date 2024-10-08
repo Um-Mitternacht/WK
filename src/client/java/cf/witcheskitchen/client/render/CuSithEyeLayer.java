@@ -1,16 +1,17 @@
 package cf.witcheskitchen.client.render;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import mod.azure.azurelib.common.api.client.renderer.layer.GeoRenderLayer;
+import mod.azure.azurelib.common.internal.client.renderer.GeoRenderer;
+import mod.azure.azurelib.common.internal.common.cache.object.BakedGeoModel;
+import mod.azure.azurelib.common.internal.common.cache.texture.AutoGlowingTexture;
+import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.cache.texture.AutoGlowingTexture;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import net.minecraft.util.math.ColorHelper;
 
 public class CuSithEyeLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
     private static Identifier[] TEXTURES;
@@ -29,6 +30,6 @@ public class CuSithEyeLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
         RenderLayer layer = getRenderLayer(animatable);
         getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable, layer,
                 bufferSource.getBuffer(layer), partialTick, 15728640, OverlayTexture.DEFAULT_UV,
-                1, 1, 1, 1);
+            ColorHelper.Argb.getArgb(255, 255, 255, 255));
     }
 }

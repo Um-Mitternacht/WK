@@ -2,17 +2,18 @@ package cf.witcheskitchen.client.render.blockentity;
 
 import cf.witcheskitchen.common.block.WitchesOvenBlock;
 import cf.witcheskitchen.common.blockentity.BrewingBarrelBlockEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Axis;
 import net.minecraft.util.math.Direction;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
+import net.minecraft.util.math.RotationAxis;
 
-@ClientOnly
+@Environment(EnvType.CLIENT)
 public class BrewingBarrelBlockEntityRender implements BlockEntityRenderer<BrewingBarrelBlockEntity> {
 
     @Override
@@ -30,11 +31,11 @@ public class BrewingBarrelBlockEntityRender implements BlockEntityRenderer<Brewi
             case EAST -> {
                 offsetX -= 1.0;
                 offsetZ += 1.05;
-                matrices.multiply(Axis.Y_POSITIVE.rotationDegrees(90));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
             }
             case WEST -> {
                 offsetX -= 1.0;
-                matrices.multiply(Axis.Y_POSITIVE.rotationDegrees(90));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90));
             }
             default -> {
             }
@@ -42,7 +43,7 @@ public class BrewingBarrelBlockEntityRender implements BlockEntityRenderer<Brewi
 
         matrices.translate(0.51 + offsetX, 0.2, -0.02 + offsetZ);
         matrices.scale(0.375F, 0.375F, 0.375F);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformation.Mode.FIXED, light, overlay, matrices, vertexConsumers, 0);
+        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.FIXED, light, overlay, matrices, vertexConsumers, entity.getWorld(), 0);
         matrices.pop();
     }
 

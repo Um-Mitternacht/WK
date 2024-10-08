@@ -2,8 +2,8 @@ package cf.witcheskitchen.client.render;
 
 import cf.witcheskitchen.client.model.RoggenwolfModel;
 import cf.witcheskitchen.common.entity.hostile.RoggenwolfEntity;
+import mod.azure.azurelib.common.api.client.renderer.GeoEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class RoggenwolfRender extends GeoEntityRenderer<RoggenwolfEntity> {
     public RoggenwolfRender(EntityRendererFactory.Context ctx) {

@@ -1,16 +1,17 @@
 package cf.witcheskitchen.client.particle;
 
 import cf.witcheskitchen.api.event.network.MagicSparkleParticleEvent;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.util.random.RandomGenerator;
-import org.quiltmc.loader.api.minecraft.ClientOnly;
+import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.util.math.random.Random;
 
-@ClientOnly
+@Environment(EnvType.CLIENT)
 public class MagicSparkleParticle extends SpriteBillboardParticle {
 
-    private final RandomGenerator random;
+    private final Random random;
     private boolean canMove = false;
     private boolean circling = false;
 
@@ -69,29 +70,29 @@ public class MagicSparkleParticle extends SpriteBillboardParticle {
         return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
     }
 
-    public RandomGenerator getRandom() {
+    public Random getRandom() {
         return random;
     }
 
     public float getRed() {
-        return this.colorRed;
+        return this.red;
     }
 
     public float getGreen() {
-        return this.colorGreen;
+        return this.green;
     }
 
     public float getBlue() {
-        return this.colorBlue;
+        return this.blue;
     }
 
     public float getAlpha() {
-        return this.colorAlpha;
+        return this.alpha;
     }
 
-    @ClientOnly
-    public record Factory(SpriteProvider spriteProvider) implements ParticleFactory<DefaultParticleType> {
-        public Particle createParticle(DefaultParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
+    @Environment(EnvType.CLIENT)
+    public record Factory(SpriteProvider spriteProvider) implements ParticleFactory<SimpleParticleType> {
+        public Particle createParticle(SimpleParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
             final MagicSparkleParticle particle = new MagicSparkleParticle(clientWorld, d, e, f, g, h, i);
             particle.setSprite(this.spriteProvider);
             return particle;
