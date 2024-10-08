@@ -24,6 +24,7 @@ public class AmaranthCropBlock extends WKTallCropBlock implements CropVariants {
     public static final VoxelShape[] LOWER_AGE_TO_SHAPE;
     public static final VoxelShape[] UPPER_AGE_TO_SHAPE;
     public static final int MAX_AGE = 6;
+    private static final IntProperty AGE = IntProperty.of("age", 0, MAX_AGE);
 
     static {
         LOWER_AGE_TO_SHAPE = new VoxelShape[]{
@@ -55,7 +56,7 @@ public class AmaranthCropBlock extends WKTallCropBlock implements CropVariants {
 
     @Override
     public IntProperty getAgeProperty() {
-        return IntProperty.of("age", 0, MAX_AGE);
+        return AGE;
     }
 
     @Override

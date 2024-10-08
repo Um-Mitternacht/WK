@@ -20,6 +20,7 @@ import java.util.Optional;
 public class HelleboreCropBlock extends WKCropBlock implements CropVariants {
     public static final int MAX_AGE = 6;
     private final HelleboreTypes type;
+    private static final IntProperty AGE = IntProperty.of("age", 0, MAX_AGE);
 
     public HelleboreCropBlock(Settings settings) {
         this(settings, HelleboreTypes.COMMON);
@@ -43,7 +44,7 @@ public class HelleboreCropBlock extends WKCropBlock implements CropVariants {
 
     @Override
     public IntProperty getAgeProperty() {
-        return IntProperty.of("age", 0, MAX_AGE);
+        return AGE;
     }
 
     @Environment(EnvType.CLIENT)

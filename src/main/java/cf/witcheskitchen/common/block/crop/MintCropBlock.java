@@ -15,6 +15,7 @@ import net.minecraft.state.property.IntProperty;
 public class MintCropBlock extends WKCropBlock implements CropVariants {
     public static final int MAX_AGE = 4;
     private final MintTypes type;
+    private static final IntProperty AGE = IntProperty.of("age", 0, MAX_AGE);
 
     public MintCropBlock(Settings settings) {
         this(settings, MintTypes.COMMON);
@@ -28,7 +29,7 @@ public class MintCropBlock extends WKCropBlock implements CropVariants {
 
     @Override
     public IntProperty getAgeProperty() {
-        return IntProperty.of("age", 0, MAX_AGE);
+        return AGE;
     }
 
     @Environment(EnvType.CLIENT)
