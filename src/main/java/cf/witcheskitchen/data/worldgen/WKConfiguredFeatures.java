@@ -6,6 +6,7 @@ import cf.witcheskitchen.common.world.generator.SumacFoliagePlacer;
 import net.minecraft.block.BlockState;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
@@ -92,14 +93,15 @@ public interface WKConfiguredFeatures {
                     .build()));
 
     static <C extends FeatureConfig, E extends Feature<C>, F extends ConfiguredFeature<C, E>> F register(String id, F feature) {
-        CONFIGURED_FEATURES.put(WitchesKitchen.id(id), feature);
+        Identifier identifier = WitchesKitchen.id(id);
+        CONFIGURED_FEATURES.put(identifier, feature);
+        CONFIGURED_FEATURE_KEYS.put(feature, RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, identifier));
         return feature;
     }
 
     static void init(Registry<ConfiguredFeature<?, ?>> configured) {
         CONFIGURED_FEATURES.forEach((id, feature) -> {
             Registry.register(configured, id, feature);
-            CONFIGURED_FEATURE_KEYS.put(feature, configured.getKey(feature).orElseThrow());
         });
     }
 }
