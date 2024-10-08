@@ -4,7 +4,7 @@ import cf.witcheskitchen.WitchesKitchen;
 import cf.witcheskitchen.common.registry.WKBlocks;
 import cf.witcheskitchen.common.world.generator.SumacFoliagePlacer;
 import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registerable;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
@@ -99,9 +99,9 @@ public interface WKConfiguredFeatures {
         return feature;
     }
 
-    static void init(Registry<ConfiguredFeature<?, ?>> configured) {
+    static void init(Registerable<ConfiguredFeature<?, ?>> configured) {
         CONFIGURED_FEATURES.forEach((id, feature) -> {
-            Registry.register(configured, id, feature);
+            configured.register(RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, id), feature);
         });
     }
 }

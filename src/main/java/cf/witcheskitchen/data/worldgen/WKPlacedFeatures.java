@@ -7,8 +7,8 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModification;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.block.Block;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registerable;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -29,17 +29,15 @@ public interface WKPlacedFeatures {
     RegistryKey<PlacedFeature> ROWAN = RegistryKey.of(RegistryKeys.PLACED_FEATURE, WitchesKitchen.id("rowan_tree"));
     RegistryKey<PlacedFeature> SUMAC = RegistryKey.of(RegistryKeys.PLACED_FEATURE, WitchesKitchen.id("sumac_tree"));
 
-    static void init() {
+    static void init(Registerable<PlacedFeature> context) {
+        RegistryEntryLookup<ConfiguredFeature<?, ?>> configured = context.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
 
-    }
-
-    static void init(Registry<ConfiguredFeature<?, ?>> configured, DynamicRegistryManager registryMap) {
-        register(registryMap, "blackthorn_tree", configured.getEntry(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.BLACKTHORN_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
-        register(registryMap, "elder_tree", configured.getEntry(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.ELDER_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
-        register(registryMap, "hawthorn_tree", configured.getEntry(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.HAWTHORN_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
-        register(registryMap, "juniper_tree", configured.getEntry(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.JUNIPER_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
-        register(registryMap, "rowan_tree", configured.getEntry(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.ROWAN_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
-        register(registryMap, "sumac_tree", configured.getEntry(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.SUMAC_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
+        register(context, "blackthorn_tree", configured.getOptional(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.BLACKTHORN_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
+        register(context, "elder_tree", configured.getOptional(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.ELDER_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
+        register(context, "hawthorn_tree", configured.getOptional(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.HAWTHORN_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
+        register(context, "juniper_tree", configured.getOptional(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.JUNIPER_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
+        register(context, "rowan_tree", configured.getOptional(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.ROWAN_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
+        register(context, "sumac_tree", configured.getOptional(WKConfiguredFeatures.CONFIGURED_FEATURE_KEYS.get(WKConfiguredFeatures.SUMAC_TREE)).orElseThrow(), 10, WKBlocks.BLACKTHORN_SAPLING);
 
         BiomeModification biomeMod = BiomeModifications.create(WitchesKitchen.id("worldgen"));
 
@@ -51,8 +49,8 @@ public interface WKPlacedFeatures {
         addTree(biomeMod, WKTags.HAS_SUMAC, SUMAC);
     }
 
-    static void register(DynamicRegistryManager registryMap, String id, RegistryEntry<ConfiguredFeature<?, ?>> feature, int rarity, Block sapling) {
-        Registry.register(registryMap.get(RegistryKeys.PLACED_FEATURE), WitchesKitchen.id(id), new PlacedFeature(feature, VegetationPlacedFeatures.treeModifiersWithWouldSurvive(RarityFilterPlacementModifier.of(rarity), sapling)));
+    static void register(Registerable<PlacedFeature> registry, String id, RegistryEntry<ConfiguredFeature<?, ?>> feature, int rarity, Block sapling) {
+        registry.register(RegistryKey.of(RegistryKeys.PLACED_FEATURE, WitchesKitchen.id(id)), new PlacedFeature(feature, VegetationPlacedFeatures.treeModifiersWithWouldSurvive(RarityFilterPlacementModifier.of(rarity), sapling)));
     }
 
     static void addTree(BiomeModification biomeMod, TagKey<Biome> tag, RegistryKey<PlacedFeature> featureRegistryKey) {
