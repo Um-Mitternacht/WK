@@ -1,43 +1,19 @@
 package cf.witcheskitchen.common.registry;
 
-import net.minecraft.entity.damage.DamageSource;
+import cf.witcheskitchen.WitchesKitchen;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 
 public interface WKDamageSources {
 
-    DamageSource ON_OVEN = new WKFireDamageSource("on_oven");
-    DamageSource HOLY = new WKHolyDamageSource("holy");
-    DamageSource HUGGING_BLACKTHORN = new BlackthornDamageSource("hugging_blackthorn");
-    DamageSource PUNCHING_BLACKTHORN = new BlackthornDamageSource("punching_blackthorn");
+    RegistryKey<DamageType> ON_OVEN = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, WitchesKitchen.id("on_oven"));
+    RegistryKey<DamageType> HOLY = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, WitchesKitchen.id("holy"));
+    RegistryKey<DamageType> HUGGING_BLACKTHORN = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, WitchesKitchen.id("hugging_blackthorn"));
+    RegistryKey<DamageType> PUNCHING_BLACKTHORN = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, WitchesKitchen.id("punching_blackthorn"));
 
     // Used to control in which order static constructors are called
     static void init() {
 
-    }
-
-    // TODO: how do we do this?
-    class WKFireDamageSource extends DamageSource {
-
-        protected WKFireDamageSource(String name) {
-            super(name);
-            this.setBypassesArmor();
-            this.setFire();
-        }
-    }
-
-    class WKHolyDamageSource extends DamageSource {
-
-        protected WKHolyDamageSource(String name) {
-            super(name);
-            this.setBypassesArmor();
-            this.setFire();
-            this.isMagic();
-            this.setUnblockable();
-        }
-    }
-
-    class BlackthornDamageSource extends DamageSource {
-        public BlackthornDamageSource(String name) {
-            super(name);
-        }
     }
 }

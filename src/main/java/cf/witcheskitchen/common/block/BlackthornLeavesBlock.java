@@ -31,7 +31,7 @@ public class BlackthornLeavesBlock extends LeavesBlock {
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         super.onEntityCollision(state, world, pos, entity);
         if (entity instanceof LivingEntity) {
-            entity.damage(WKDamageSources.HUGGING_BLACKTHORN, 2.0F);
+            entity.damage(entity.getDamageSources().create(WKDamageSources.HUGGING_BLACKTHORN), 2.0F);
         }
     }
 
@@ -39,7 +39,7 @@ public class BlackthornLeavesBlock extends LeavesBlock {
     public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
         super.onBlockBreakStart(state, world, pos, player);
         if (player.getMainHandStack().isEmpty()) {
-            player.damage(WKDamageSources.PUNCHING_BLACKTHORN, 2.0F);
+            player.damage(player.getDamageSources().create(WKDamageSources.PUNCHING_BLACKTHORN), 2.0F);
         }
     }
 }

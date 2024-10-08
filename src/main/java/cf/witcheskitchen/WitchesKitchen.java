@@ -52,7 +52,6 @@ public class WitchesKitchen implements ModInitializer {
         WKStatusEffects.init();
         WKSoundEvents.init();
         WKEntityTypes.init();
-        WKDamageSources.init();
         WKMemoryModuleTypes.init();
         WKSensorTypes.init();
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new DimColorResourceReloader());

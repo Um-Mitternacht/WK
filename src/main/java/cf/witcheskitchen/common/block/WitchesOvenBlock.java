@@ -126,7 +126,7 @@ public class WitchesOvenBlock extends WKBlock implements Waterloggable {
     public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
         super.onSteppedOn(world, pos, state, entity);
         if (state.get(LIT) && !entity.isFireImmune() && entity instanceof LivingEntity) {
-            entity.damage(WKDamageSources.ON_OVEN, 1);
+            entity.damage(entity.getDamageSources().create(WKDamageSources.ON_OVEN), 1);
         }
     }
 

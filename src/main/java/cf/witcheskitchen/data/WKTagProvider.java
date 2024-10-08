@@ -91,7 +91,21 @@ public class WKTagProvider {
 
         @Override
         protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-            getOrCreateTagBuilder(DamageTypeTags.BURN_FROM_STEPPING).add(WKDamageSources.ON_OVEN.getType());
+            getOrCreateTagBuilder(DamageTypeTags.BURN_FROM_STEPPING)
+                .add(WKDamageSources.ON_OVEN);
+
+            getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ARMOR)
+                .add(WKDamageSources.HOLY)
+                .add(WKDamageSources.ON_OVEN);
+
+            getOrCreateTagBuilder(DamageTypeTags.BYPASSES_EFFECTS)
+                .add(WKDamageSources.HOLY);
+
+            getOrCreateTagBuilder(DamageTypeTags.BYPASSES_EFFECTS)
+                .add(WKDamageSources.HOLY);
+
+            getOrCreateTagBuilder(DamageTypeTags.WITCH_RESISTANT_TO)
+                .add(WKDamageSources.HOLY);
         }
     }
 }
