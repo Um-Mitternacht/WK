@@ -132,7 +132,7 @@ dependencies {
     include "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
     include modApi("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}")
     modImplementation "mod.azure.azurelib:azurelib-fabric-${minecraft_version}:${azurelib_version}"
-    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-1.21:1.14.5"
+    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${minecraft_version}:${smartbrainlib_version}"
 }
 
 processResources {
