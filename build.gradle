@@ -106,7 +106,10 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}"
+    modImplementation("com.klikli_dev:modonomicon-${minecraft_version}-fabric:${modonomicon_version}") {
+        // Exclude JEI transitive dependency, as otherwise, the game will not launch in dev.
+        exclude group: "mezz.jei"
+    }
     modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     modImplementation "com.github.Virtuoel:Pehkui:${pehkui_version}"
     modCompileOnly "squeek.appleskin:appleskin-fabric:${appleskin_version}:api"
@@ -124,14 +127,17 @@ dependencies {
     modRuntimeOnly "lol.bai:badpackets:fabric-${badpacketsVersion}"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
     modCompileOnlyApi "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
     modCompileOnly "dev.architectury:architectury-fabric:$architectury_version"
     modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:$cloth_version") {
         // required for making REI integration work
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modCompileOnlyApi("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
+    modCompileOnlyApi("mezz.jei:jei-${mc_version}-common-api-intermediary:${jei_version}")
     modCompileOnlyApi("mezz.jei:jei-${mc_version}-fabric-api:${jei_version}")
-    modRuntimeOnly("mezz.jei:jei-${mc_version}-fabric:${jei_version}")
+    // TODO: JEI cannot be used in dev runtime due to an issue where the common libs it transitively depends on do not remap to Yarn.
+    //       The only fix is for either JEI to fix it or for us to switch to Mojmap.
+    //modRuntimeOnly("mezz.jei:jei-${mc_version}-fabric:${jei_version}")
     modCompileOnlyApi "dev.emi:emi-fabric:${emi_version}:api"
     include modImplementation("io.github.ladysnake:PlayerAbilityLib:${pal_version}")
     include modApi("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}")
